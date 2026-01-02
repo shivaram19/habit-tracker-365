@@ -13,7 +13,7 @@ import { useDayLog, useUpsertDay } from '@/hooks/useLogs';
 import { useToast } from '@/context/ToastContext';
 import { useAuth } from '@/context/AuthContext';
 import { CATEGORIES } from '@/utils/categories';
-import { formatDisplayDate, getTodayDate, isToday, isFutureDate } from '@/utils/formatters';
+import { formatDisplayDate, formatDate, getTodayDate, isToday, isFutureDate } from '@/utils/formatters';
 import { categoryRequiresSpending } from '@/utils/categories';
 
 export default function LogScreen() {
@@ -72,13 +72,13 @@ export default function LogScreen() {
   };
 
   const handlePreviousDay = () => {
-    const newDate = formatDisplayDate(subDays(new Date(selectedDate), 1));
-    setSelectedDate(newDate.split(',').join('').split(' ').join('-'));
+    const newDate = subDays(new Date(selectedDate), 1);
+    setSelectedDate(formatDate(newDate, 'yyyy-MM-dd'));
   };
 
   const handleNextDay = () => {
-    const newDate = formatDisplayDate(addDays(new Date(selectedDate), 1));
-    setSelectedDate(newDate.split(',').join('').split(' ').join('-'));
+    const newDate = addDays(new Date(selectedDate), 1);
+    setSelectedDate(formatDate(newDate, 'yyyy-MM-dd'));
   };
 
   const handleToday = () => {
