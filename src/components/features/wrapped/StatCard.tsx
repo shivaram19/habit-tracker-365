@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import React from 'react';
+import { View, Text, Platform } from 'react-native';
+import { MotiView } from 'moti';
 import { LucideIcon } from 'lucide-react-native';
 
 interface StatCardProps {
@@ -17,77 +18,39 @@ export const StatCard: React.FC<StatCardProps> = ({
   color = '#3B82F6',
   delay = 0,
 }) => {
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const translateYAnim = useRef(new Animated.Value(20)).current;
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 400,
-        delay,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateYAnim, {
-        toValue: 0,
-        duration: 400,
-        delay,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
+  const shadowStyle = Platform.select({
+    ios: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+    },
+    android: {},
+  });
 
   return (
-    <Animated.View
+    <MotiView
+      from={{ opacity: 0, translateY: 20 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      transition={{ type: 'timing', duration: 400, delay }}
+      className="flex-1 bg-white rounded-2xl p-4 items-center min-w-[150px]"
       style={[
-        styles.container,
-        {
-          opacity: fadeAnim,
-          transform: [{ translateY: translateYAnim }],
-        },
+        shadowStyle,
+        Platform.OS === 'android' && { elevation: 3 },
       ]}
     >
-      <View style={[styles.iconContainer, { backgroundColor: `${color}20` }]}>
+      <View
+        className="w-12 h-12 rounded-full items-center justify-center mb-3"
+        style={{ backgroundColor: `${color}20` }}
+      >
         <Icon size={24} color={color} />
       </View>
-      <Text style={styles.label}>{label}</Text>
-      <Text style={[styles.value, { color }]}>{value}</Text>
-    </Animated.View>
+      <Text className="text-xs font-semibold text-gray-600 text-center mb-1">
+        {label}
+      </Text>
+      <Text className="text-2xl font-bold text-center" style={{ color }}>
+        {value}
+      </Text>
+    </MotiView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
-    minWidth: 150,
-  },
-  iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#6B7280',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  value: {
-    fontSize: 24,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-});

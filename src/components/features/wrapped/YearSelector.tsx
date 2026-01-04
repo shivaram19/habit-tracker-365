@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { MotiView } from 'moti';
 
 interface YearSelectorProps {
   years: number[];
@@ -15,12 +16,12 @@ export const YearSelector: React.FC<YearSelectorProps> = ({
   const currentYear = new Date().getFullYear();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>View Year</Text>
+    <View className="py-4 px-4 bg-white border-b border-gray-200">
+      <Text className="text-xs font-semibold text-gray-600 mb-3">View Year</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerClassName="gap-3"
       >
         {years.map((year) => {
           const isSelected = selectedYear === year;
@@ -30,21 +31,27 @@ export const YearSelector: React.FC<YearSelectorProps> = ({
             <TouchableOpacity
               key={year}
               onPress={() => onYearSelect(year)}
-              style={[
-                styles.yearButton,
-                isSelected && styles.yearButtonSelected,
-              ]}
               activeOpacity={0.7}
             >
-              <Text
-                style={[
-                  styles.yearText,
-                  isSelected && styles.yearTextSelected,
-                ]}
+              <MotiView
+                animate={{
+                  backgroundColor: isSelected ? '#3B82F6' : '#F3F4F6',
+                  scale: isSelected ? 1.05 : 1,
+                }}
+                transition={{ type: 'timing', duration: 200 }}
+                className="px-5 py-3 rounded-xl relative"
               >
-                {year}
-              </Text>
-              {isCurrent && <View style={styles.currentIndicator} />}
+                <Text
+                  className={`text-base font-bold ${
+                    isSelected ? 'text-white' : 'text-gray-700'
+                  }`}
+                >
+                  {year}
+                </Text>
+                {isCurrent && (
+                  <View className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-green-600" />
+                )}
+              </MotiView>
             </TouchableOpacity>
           );
         })}
@@ -52,49 +59,3 @@ export const YearSelector: React.FC<YearSelectorProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6B7280',
-    marginBottom: 12,
-  },
-  scrollContent: {
-    gap: 12,
-  },
-  yearButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 12,
-    backgroundColor: '#F3F4F6',
-    position: 'relative',
-  },
-  yearButtonSelected: {
-    backgroundColor: '#3B82F6',
-  },
-  yearText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#374151',
-  },
-  yearTextSelected: {
-    color: '#FFFFFF',
-  },
-  currentIndicator: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#10B981',
-  },
-});

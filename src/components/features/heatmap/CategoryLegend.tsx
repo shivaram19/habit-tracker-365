@@ -1,61 +1,28 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { CATEGORIES, EMPTY_CATEGORY } from '@/utils/categories';
 
 export const CategoryLegend: React.FC = () => {
   const allCategories = [...CATEGORIES, EMPTY_CATEGORY];
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Categories</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+    <View className="py-3 px-4 bg-gray-50 border-b border-gray-200">
+      <Text className="text-xs font-semibold text-gray-600 mb-2">Categories</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerClassName="gap-3 pr-4"
+      >
         {allCategories.map((category) => (
-          <View key={category.id} style={styles.legendItem}>
+          <View key={category.id} className="flex-row items-center gap-1.5">
             <View
-              style={[
-                styles.colorDot,
-                { backgroundColor: category.color },
-              ]}
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: category.color }}
             />
-            <Text style={styles.categoryName}>{category.name}</Text>
+            <Text className="text-xs font-medium text-gray-700">{category.name}</Text>
           </View>
         ))}
       </ScrollView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#F9FAFB',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  title: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6B7280',
-    marginBottom: 8,
-  },
-  scrollContent: {
-    gap: 12,
-    paddingRight: 16,
-  },
-  legendItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  colorDot: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  categoryName: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#374151',
-  },
-});

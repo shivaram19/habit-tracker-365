@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import {
   View,
   TouchableOpacity,
   StyleSheet,
   Modal as RNModal,
   Dimensions,
-  Animated,
 } from 'react-native';
+import { MotiView } from 'moti';
 import { BlurView } from 'expo-blur';
 
 interface ModalProps {
@@ -18,16 +18,6 @@ interface ModalProps {
 const { height } = Dimensions.get('window');
 
 export const Modal: React.FC<ModalProps> = ({ visible, onClose, children }) => {
-  const slideAnim = useRef(new Animated.Value(height)).current;
-
-  useEffect(() => {
-    Animated.timing(slideAnim, {
-      toValue: visible ? 0 : height,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [visible]);
-
   return (
     <RNModal
       visible={visible}
@@ -35,43 +25,26 @@ export const Modal: React.FC<ModalProps> = ({ visible, onClose, children }) => {
       animationType="none"
       onRequestClose={onClose}
     >
-      <View style={styles.container}>
+      <View className="flex-1 justify-end">
         <TouchableOpacity
-          style={styles.backdrop}
+          style={StyleSheet.absoluteFill}
+          className="bg-black/50"
           activeOpacity={1}
           onPress={onClose}
         >
           <BlurView intensity={20} style={StyleSheet.absoluteFill} />
         </TouchableOpacity>
 
-        <Animated.View
-          style={[
-            styles.content,
-            {
-              transform: [{ translateY: slideAnim }],
-            },
-          ]}
+        <MotiView
+          from={{ translateY: height }}
+          animate={{ translateY: visible ? 0 : height }}
+          transition={{ type: 'timing', duration: 300 }}
+          className="bg-white rounded-t-3xl"
+          style={{ maxHeight: height * 0.9 }}
         >
           {children}
-        </Animated.View>
+        </MotiView>
       </View>
     </RNModal>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  content: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: height * 0.9,
-  },
-});

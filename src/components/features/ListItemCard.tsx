@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Platform } from 'react-native';
+import { MotiView } from 'moti';
 import { ListItem } from '@/types';
 import { CATEGORIES } from '@/utils/categories';
 import { Trash2, Edit } from 'lucide-react-native';
@@ -18,28 +19,56 @@ export const ListItemCard: React.FC<ListItemCardProps> = ({
   const category = CATEGORIES.find(c => c.id === item.category);
   const categoryColor = category?.color || '#6B7280';
 
-  return (
-    <View style={styles.container}>
-      <View style={[styles.categoryIndicator, { backgroundColor: categoryColor }]} />
+  const shadowStyle = Platform.select({
+    ios: {
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 2,
+    },
+    android: {},
+  });
 
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.name} numberOfLines={1}>
+  return (
+    <MotiView
+      from={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: 'timing', duration: 200 }}
+      className="flex-row items-center bg-white rounded-xl p-4 mb-2"
+      style={[
+        shadowStyle,
+        Platform.OS === 'android' && { elevation: 2 },
+      ]}
+    >
+      <View
+        className="w-1 h-12 rounded-sm mr-3"
+        style={{ backgroundColor: categoryColor }}
+      />
+
+      <View className="flex-1">
+        <View className="flex-row justify-between items-center mb-1.5">
+          <Text className="text-base font-semibold text-gray-900 flex-1 mr-3" numberOfLines={1}>
             {item.name}
           </Text>
-          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+          <Text className="text-base font-bold text-green-600">
+            ${item.price.toFixed(2)}
+          </Text>
         </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.category}>{category?.name || 'Other'}</Text>
-          <Text style={styles.date}>{new Date(item.date).toLocaleDateString()}</Text>
+        <View className="flex-row justify-between items-center">
+          <Text className="text-xs font-medium text-gray-600">
+            {category?.name || 'Other'}
+          </Text>
+          <Text className="text-xs text-gray-400">
+            {new Date(item.date).toLocaleDateString()}
+          </Text>
         </View>
       </View>
 
-      <View style={styles.actions}>
+      <View className="flex-row gap-2 ml-2">
         {onEdit && (
           <TouchableOpacity
-            style={styles.actionButton}
+            className="p-2 rounded-lg bg-gray-50"
             onPress={() => onEdit(item)}
           >
             <Edit size={18} color="#6B7280" />
@@ -47,80 +76,13 @@ export const ListItemCard: React.FC<ListItemCardProps> = ({
         )}
         {onDelete && (
           <TouchableOpacity
-            style={styles.actionButton}
+            className="p-2 rounded-lg bg-gray-50"
             onPress={() => onDelete(item.id)}
           >
             <Trash2 size={18} color="#DC2626" />
           </TouchableOpacity>
         )}
       </View>
-    </View>
+    </MotiView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  categoryIndicator: {
-    width: 4,
-    height: 48,
-    borderRadius: 2,
-    marginRight: 12,
-  },
-  content: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-    flex: 1,
-    marginRight: 12,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#10B981',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  category: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#6B7280',
-  },
-  date: {
-    fontSize: 13,
-    color: '#9CA3AF',
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 8,
-    marginLeft: 8,
-  },
-  actionButton: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#F9FAFB',
-  },
-});

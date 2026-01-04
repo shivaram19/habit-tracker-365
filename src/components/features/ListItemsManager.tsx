@@ -88,53 +88,55 @@ export const ListItemsManager: React.FC<ListItemsManagerProps> = ({
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View className="flex-1 justify-center items-center">
         <LoadingSpinner />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View className="flex-1">
+      <View className="flex-row justify-between items-center mb-4">
         <View>
-          <Text style={styles.title}>Spending Items</Text>
-          <Text style={styles.totalSpend}>Total: ${totalSpend.toFixed(2)}</Text>
+          <Text className="text-xl font-bold text-gray-900">Spending Items</Text>
+          <Text className="text-sm font-semibold text-green-600 mt-0.5">
+            Total: ${totalSpend.toFixed(2)}
+          </Text>
         </View>
         <TouchableOpacity
-          style={styles.addButton}
+          className="flex-row items-center gap-1.5 bg-blue-500 px-4 py-2.5 rounded-lg"
           onPress={() => setShowForm(true)}
         >
           <Plus size={20} color="#FFFFFF" />
-          <Text style={styles.addButtonText}>Add</Text>
+          <Text className="text-white text-sm font-semibold">Add</Text>
         </TouchableOpacity>
       </View>
 
       {error && (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
+        <View className="bg-red-100 p-3 rounded-lg mb-4">
+          <Text className="text-red-600 text-sm font-medium">{error}</Text>
         </View>
       )}
 
-      <View style={styles.filterContainer}>
+      <View className="flex-row items-center gap-2 mb-4">
         <Filter size={16} color="#6B7280" />
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filterScroll}
+          contentContainerClassName="gap-2"
         >
           <TouchableOpacity
-            style={[
-              styles.filterChip,
-              filterCategory === undefined && styles.filterChipActive,
-            ]}
+            className={`px-3 py-1.5 rounded-full border ${
+              filterCategory === undefined
+                ? 'bg-blue-500 border-blue-500'
+                : 'bg-gray-100 border-gray-200'
+            }`}
             onPress={() => setFilterCategory(undefined)}
           >
             <Text
-              style={[
-                styles.filterChipText,
-                filterCategory === undefined && styles.filterChipTextActive,
-              ]}
+              className={`text-xs font-medium ${
+                filterCategory === undefined ? 'text-white' : 'text-gray-600'
+              }`}
             >
               All
             </Text>
@@ -142,18 +144,17 @@ export const ListItemsManager: React.FC<ListItemsManagerProps> = ({
           {spendingCategories.map(cat => (
             <TouchableOpacity
               key={cat.id}
-              style={[
-                styles.filterChip,
-                filterCategory === cat.id && styles.filterChipActive,
-                filterCategory === cat.id && { backgroundColor: cat.color },
-              ]}
+              className="px-3 py-1.5 rounded-full border"
+              style={{
+                backgroundColor: filterCategory === cat.id ? cat.color : '#F3F4F6',
+                borderColor: filterCategory === cat.id ? cat.color : '#E5E7EB',
+              }}
               onPress={() => setFilterCategory(cat.id)}
             >
               <Text
-                style={[
-                  styles.filterChipText,
-                  filterCategory === cat.id && styles.filterChipTextActive,
-                ]}
+                className={`text-xs ${
+                  filterCategory === cat.id ? 'text-white font-semibold' : 'text-gray-600 font-medium'
+                }`}
               >
                 {cat.name}
               </Text>
@@ -162,7 +163,7 @@ export const ListItemsManager: React.FC<ListItemsManagerProps> = ({
         </ScrollView>
       </View>
 
-      <ScrollView style={styles.list} showsVerticalScrollIndicator={false}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {filteredItems.length === 0 ? (
           <EmptyState
             title="No items yet"
@@ -190,89 +191,3 @@ export const ListItemsManager: React.FC<ListItemsManagerProps> = ({
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#111827',
-  },
-  totalSpend: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#10B981',
-    marginTop: 2,
-  },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    backgroundColor: '#3B82F6',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  errorContainer: {
-    backgroundColor: '#FEE2E2',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  errorText: {
-    color: '#DC2626',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  filterContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 16,
-  },
-  filterScroll: {
-    gap: 8,
-  },
-  filterChip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: '#F3F4F6',
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  filterChipActive: {
-    backgroundColor: '#3B82F6',
-    borderColor: '#3B82F6',
-  },
-  filterChipText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: '#6B7280',
-  },
-  filterChipTextActive: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-  },
-  list: {
-    flex: 1,
-  },
-});

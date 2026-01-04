@@ -1,4 +1,4 @@
-import * as FileSystem from 'expo-file-system';
+import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { Platform } from 'react-native';
 import { logsService } from '@/services/logs';
@@ -53,15 +53,14 @@ export const exportService = {
   async shareForMobile(jsonString: string): Promise<string> {
     try {
       const fileName = `daily-painter-export-${new Date().toISOString().split('T')[0]}.json`;
-      const fileUri = `${FileSystem.cacheDirectory}${fileName}`;
+      const file = new File(Paths.cache, fileName);
 
-      await FileSystem.writeAsStringAsync(fileUri, jsonString, {
-        encoding: FileSystem.EncodingType.UTF8,
-      });
+      await file.create();
+      await file.write(jsonString);
 
       const canShare = await Sharing.isAvailableAsync();
       if (canShare) {
-        await Sharing.shareAsync(fileUri, {
+        await Sharing.shareAsync(file.uri, {
           mimeType: 'application/json',
           dialogTitle: 'Export Your Data',
           UTI: 'public.json',

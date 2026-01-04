@@ -40,55 +40,53 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
 
   return (
     <Modal visible={visible} onClose={onClose}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.headerContent}>
-            <Text style={styles.dateText}>{formattedDate}</Text>
+      <View className="max-h-[90%]">
+        <View className="flex-row justify-between items-start p-5 border-b border-gray-200">
+          <View className="flex-1 mr-4">
+            <Text className="text-lg font-bold text-gray-900 mb-1">{formattedDate}</Text>
             {day.highlight && (
-              <Text style={styles.highlightText}>"{day.highlight}"</Text>
+              <Text className="text-sm italic text-gray-600">"{day.highlight}"</Text>
             )}
           </View>
-          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+          <TouchableOpacity onPress={onClose} className="p-1">
             <X size={24} color="#6B7280" />
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={styles.content}>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>24-Hour Breakdown</Text>
-            <View style={styles.hoursGrid}>
+        <ScrollView className="p-5">
+          <View className="mb-6">
+            <Text className="text-base font-bold text-gray-900 mb-3">24-Hour Breakdown</Text>
+            <View className="gap-2">
               {hourlyLogs.map((categoryId, hour) => {
                 const category = getCategoryById(categoryId);
                 return (
-                  <View key={hour} style={styles.hourItem}>
-                    <Text style={styles.hourLabel}>
+                  <View key={hour} className="flex-row items-center gap-3">
+                    <Text className="w-[50px] text-xs font-semibold text-gray-600">
                       {hour.toString().padStart(2, '0')}:00
                     </Text>
                     <View
-                      style={[
-                        styles.hourBar,
-                        { backgroundColor: category.color },
-                      ]}
+                      className="w-10 h-5 rounded"
+                      style={{ backgroundColor: category.color }}
                     />
-                    <Text style={styles.hourCategory}>{category.name}</Text>
+                    <Text className="text-xs text-gray-700">{category.name}</Text>
                   </View>
                 );
               })}
             </View>
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Category Summary</Text>
+          <View className="mb-6">
+            <Text className="text-base font-bold text-gray-900 mb-3">Category Summary</Text>
             {categoryEntries.map(({ category, hours }) => (
-              <View key={category.id} style={styles.categoryItem}>
+              <View key={category.id} className="flex-row items-center py-2 gap-3">
                 <View
-                  style={[
-                    styles.categoryDot,
-                    { backgroundColor: category.color },
-                  ]}
+                  className="w-4 h-4 rounded-full"
+                  style={{ backgroundColor: category.color }}
                 />
-                <Text style={styles.categoryName}>{category.name}</Text>
-                <Text style={styles.categoryHours}>
+                <Text className="flex-1 text-base font-medium text-gray-700">
+                  {category.name}
+                </Text>
+                <Text className="text-sm font-semibold text-gray-600">
                   {hours} {hours === 1 ? 'hour' : 'hours'}
                 </Text>
               </View>
@@ -96,9 +94,9 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
           </View>
 
           {day.total_spend > 0 && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Total Spending</Text>
-              <Text style={styles.spendingAmount}>
+            <View className="mb-6">
+              <Text className="text-base font-bold text-gray-900 mb-3">Total Spending</Text>
+              <Text className="text-3xl font-bold text-green-600">
                 ${Number(day.total_spend).toFixed(2)}
               </Text>
             </View>
@@ -108,97 +106,3 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
     </Modal>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    maxHeight: '90%',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  headerContent: {
-    flex: 1,
-    marginRight: 16,
-  },
-  dateText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 4,
-  },
-  highlightText: {
-    fontSize: 14,
-    fontStyle: 'italic',
-    color: '#6B7280',
-  },
-  closeButton: {
-    padding: 4,
-  },
-  content: {
-    padding: 20,
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 12,
-  },
-  hoursGrid: {
-    gap: 8,
-  },
-  hourItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  hourLabel: {
-    width: 50,
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#6B7280',
-  },
-  hourBar: {
-    width: 40,
-    height: 20,
-    borderRadius: 4,
-  },
-  hourCategory: {
-    fontSize: 13,
-    color: '#374151',
-  },
-  categoryItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    gap: 12,
-  },
-  categoryDot: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-  },
-  categoryName: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#374151',
-  },
-  categoryHours: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6B7280',
-  },
-  spendingAmount: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#10B981',
-  },
-});

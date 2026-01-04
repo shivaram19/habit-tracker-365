@@ -14,7 +14,7 @@ interface ToastMessage {
   type: ToastType;
 }
 
-const ToastItem: React.FC<{ toast: ToastMessage; getBackgroundColor: (type: ToastType) => string; getIcon: (type: ToastType) => JSX.Element }> = ({ toast, getBackgroundColor, getIcon }) => {
+const ToastItem: React.FC<{ toast: ToastMessage; getBackgroundColor: (type: ToastType) => string; getIcon: (type: ToastType) => React.ReactElement }> = ({ toast, getBackgroundColor, getIcon }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateYAnim = useRef(new Animated.Value(-20)).current;
 

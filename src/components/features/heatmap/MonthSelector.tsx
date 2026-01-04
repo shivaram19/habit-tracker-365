@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { format } from 'date-fns';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { MotiView } from 'moti';
 
 interface MonthSelectorProps {
   selectedMonth: number;
@@ -24,11 +24,11 @@ export const MonthSelector: React.FC<MonthSelectorProps> = ({
   const currentYear = new Date().getFullYear();
 
   return (
-    <View style={styles.container}>
+    <View className="flex-row items-center py-3 pl-4 bg-white border-b border-gray-200">
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerClassName="gap-2 pr-2"
       >
         {MONTHS.map((month, index) => {
           const isSelected = selectedMonth === index;
@@ -38,81 +38,35 @@ export const MonthSelector: React.FC<MonthSelectorProps> = ({
             <TouchableOpacity
               key={index}
               onPress={() => onMonthSelect(index)}
-              style={[
-                styles.monthButton,
-                isSelected && styles.monthButtonSelected,
-              ]}
               activeOpacity={0.7}
             >
-              <Text
-                style={[
-                  styles.monthText,
-                  isSelected && styles.monthTextSelected,
-                  isCurrent && styles.monthTextCurrent,
-                ]}
+              <MotiView
+                animate={{
+                  backgroundColor: isSelected ? '#3B82F6' : '#F3F4F6',
+                  scale: isSelected ? 1.05 : 1,
+                }}
+                transition={{ type: 'timing', duration: 200 }}
+                className="px-4 py-2 rounded-full"
               >
-                {month}
-              </Text>
+                <Text
+                  className={`text-sm ${
+                    isSelected ? 'text-white font-semibold' : 'text-gray-600 font-medium'
+                  } ${isCurrent ? 'font-bold' : ''}`}
+                >
+                  {month}
+                </Text>
+              </MotiView>
             </TouchableOpacity>
           );
         })}
       </ScrollView>
       <TouchableOpacity
         onPress={onTodayPress}
-        style={styles.todayButton}
+        className="ml-2 mr-4 px-4 py-2 rounded-full bg-green-600"
         activeOpacity={0.7}
       >
-        <Text style={styles.todayText}>Today</Text>
+        <Text className="text-sm font-semibold text-white">Today</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingLeft: 16,
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  scrollContent: {
-    gap: 8,
-    paddingRight: 8,
-  },
-  monthButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#F3F4F6',
-  },
-  monthButtonSelected: {
-    backgroundColor: '#3B82F6',
-  },
-  monthText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6B7280',
-  },
-  monthTextSelected: {
-    color: '#FFFFFF',
-  },
-  monthTextCurrent: {
-    fontWeight: '700',
-  },
-  todayButton: {
-    marginLeft: 8,
-    marginRight: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#10B981',
-  },
-  todayText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-});
