@@ -1,5 +1,13 @@
-import React, { useState } from 'react';
-import { View, Text, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+  Animated,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
@@ -17,6 +25,25 @@ export const SignupScreen = () => {
   const { signUp } = useAuth();
   const { showToast } = useToast();
 
+  // Animation values
+  const fadeAnim = new Animated.Value(0);
+  const slideAnim = new Animated.Value(30);
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   const passwordStrength = getPasswordStrength(password);
 
   const getStrengthColor = () => {
@@ -31,7 +58,12 @@ export const SignupScreen = () => {
   };
 
   const handleSignup = async () => {
-    const validation = validateSignupForm(email, password, confirmPassword, name);
+    const validation = validateSignupForm(
+      email,
+      password,
+      confirmPassword,
+      name
+    );
 
     if (!validation.isValid) {
       showToast(validation.errors[0], 'error');
@@ -59,64 +91,94 @@ export const SignupScreen = () => {
           contentContainerClassName="flex-1 px-6 justify-center"
           keyboardShouldPersistTaps="handled"
         >
-          <View className="mb-8">
-            <Text className="text-4xl font-bold text-gray-900 mb-2">Create Account</Text>
-            <Text className="text-gray-600 text-lg">Start tracking your life by the hour</Text>
-          </View>
+          {/* Animated container */}
+          <Animated.View
+            style={{
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
+            }}
+            className="w-full"
+          >
+            <View className="mb-8">
+              <Text className="text-4xl font-bold text-gray-900 mb-2">
+                Create Account
+              </Text>
+              <Text className="text-gray-600 text-lg">
+                Start tracking your life by the hour
+              </Text>
+            </View>
 
-          <View className="mb-6">
-            <Input
-              label="Name"
-              value={name}
-              onChangeText={setName}
-              placeholder="Your name"
-            />
+            <View className="mb-6">
+              <Input
+                label="Name"
+                value={name}
+                onChangeText={setName}
+                placeholder="Your name"
+              />
 
-            <Input
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="your@email.com"
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
+              <Input
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                placeholder="your@email.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
 
-            <Input
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Create a password"
-              secureTextEntry
-            />
+              <Input
+                label="Password"
+                value={password}
+                onChangeText={setPassword}
+                placeholder="Create a password"
+                secureTextEntry
+              />
 
-            {password.length > 0 && (
-              <View className="mb-4">
-                <View className="flex-row items-center">
-                  <View className="flex-1 h-1 bg-gray-200 rounded mr-2">
-                    <View className={`h-full ${getStrengthColor()} rounded`} style={{ width: passwordStrength === 'weak' ? '33%' : passwordStrength === 'medium' ? '66%' : '100%' }} />
+              {password.length > 0 && (
+                <View className="mb-4">
+                  <View className="flex-row items-center">
+                    <View className="flex-1 h-1 bg-gray-200 rounded mr-2">
+                      <View
+                        className={`h-full ${getStrengthColor()} rounded`}
+                        style={{
+                          width:
+                            passwordStrength === 'weak'
+                              ? '33%'
+                              : passwordStrength === 'medium'
+                              ? '66%'
+                              : '100%',
+                        }}
+                      />
+                    </View>
+                    <Text className="text-sm text-gray-600 capitalize">
+                      {passwordStrength}
+                    </Text>
                   </View>
-                  <Text className="text-sm text-gray-600 capitalize">{passwordStrength}</Text>
                 </View>
-              </View>
-            )}
+              )}
 
-            <Input
-              label="Confirm Password"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholder="Confirm your password"
-              secureTextEntry
+              <Input
+                label="Confirm Password"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder="Confirm your password"
+                secureTextEntry
+              />
+            </View>
+
+            <Button
+              title="Sign Up"
+              onPress={handleSignup}
+              loading={loading}
+              fullWidth
             />
-          </View>
 
-          <Button title="Sign Up" onPress={handleSignup} loading={loading} fullWidth />
-
-          <View className="flex-row justify-center mt-6">
-            <Text className="text-gray-600">Already have an account? </Text>
-            <TouchableOpacity onPress={() => router.push('/auth/login')}>
-              <Text className="text-blue-600 font-semibold">Sign In</Text>
-            </TouchableOpacity>
-          </View>
+            <View className="flex-row justify-center mt-6">
+              <Text className="text-gray-600">Already have an account? </Text>
+              <TouchableOpacity onPress={() => router.push('/auth/login')}>
+                <Text className="text-blue-600 font-semibold">Sign In</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
