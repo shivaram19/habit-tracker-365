@@ -52,7 +52,12 @@ export const authService = {
 
   async logout() {
     const { error } = await supabase.auth.signOut();
-    await SecureStore.deleteItemAsync(TOKEN_KEY);
+
+    try {
+      await SecureStore.deleteItemAsync(TOKEN_KEY);
+    } catch (err) {
+      console.error('Failed to delete stored token:', err);
+    }
 
     if (error) throw error;
   },

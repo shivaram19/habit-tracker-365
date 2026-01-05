@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
 import { useProfile } from '@/hooks/useProfile';
@@ -10,6 +11,7 @@ import { exportService } from '@/utils/export';
 import { User } from 'lucide-react-native';
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const { user, signOut } = useAuth();
   const { showToast } = useToast();
   const { profile, isLoading, updateProfile, isUpdating } = useProfile();
@@ -56,8 +58,10 @@ export default function ProfileScreen() {
     try {
       await signOut();
       showToast('Logged out successfully', 'success');
-    } catch (error) {
-      showToast('Logout failed', 'error');
+      router.replace('/auth/login');
+    } catch (error: any) {
+      console.error('Logout error:', error);
+      showToast(error?.message || 'Logout failed', 'error');
     }
   };
 
