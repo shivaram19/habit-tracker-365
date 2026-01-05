@@ -20,11 +20,16 @@ export const authService = {
     if (data.user && data.session) {
       await SecureStore.setItemAsync(TOKEN_KEY, data.session.access_token);
 
-      await supabase.from('profiles').insert({
+      const { error: profileError } = await supabase.from('profiles').insert({
         id: data.user.id,
         email: data.user.email!,
         name: name || null,
       });
+
+      if (profileError) {
+        console.error('Profile creation error:', profileError);
+        throw new Error('Failed to create user profile');
+      }
     }
 
     return { user: data.user, session: data.session };
