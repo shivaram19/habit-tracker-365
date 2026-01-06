@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { HeatmapDayRow } from './HeatmapDayRow';
 import { Day } from '@/types';
 
@@ -15,9 +15,9 @@ export const HeatmapMonthSection: React.FC<HeatmapMonthSectionProps> = ({
   onDayPress,
 }) => {
   return (
-    <View className="mb-2">
-      <View className="px-4 py-3 bg-gray-50">
-        <Text className="text-base font-bold text-gray-900">{month}</Text>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.monthTitle}>{month}</Text>
       </View>
       {days.map((day) => (
         <HeatmapDayRow
@@ -30,3 +30,19 @@ export const HeatmapMonthSection: React.FC<HeatmapMonthSectionProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 8,
+  },
+  header: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#F9FAFB',
+  },
+  monthTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
+  },
+});

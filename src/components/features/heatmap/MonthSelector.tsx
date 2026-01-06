@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { MotiView } from 'moti';
 
 interface MonthSelectorProps {
@@ -24,11 +24,11 @@ export const MonthSelector: React.FC<MonthSelectorProps> = ({
   const currentYear = new Date().getFullYear();
 
   return (
-    <View className="flex-row items-center py-3 pl-4 bg-white border-b border-gray-200">
+    <View style={styles.container}>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerClassName="gap-2 pr-2"
+        contentContainerStyle={styles.scrollContent}
       >
         {MONTHS.map((month, index) => {
           const isSelected = selectedMonth === index;
@@ -46,12 +46,14 @@ export const MonthSelector: React.FC<MonthSelectorProps> = ({
                   scale: isSelected ? 1.05 : 1,
                 }}
                 transition={{ type: 'timing', duration: 200 }}
-                className="px-4 py-2 rounded-full"
+                style={styles.monthChip}
               >
                 <Text
-                  className={`text-sm ${
-                    isSelected ? 'text-white font-semibold' : 'text-gray-600 font-medium'
-                  } ${isCurrent ? 'font-bold' : ''}`}
+                  style={[
+                    styles.monthText,
+                    isSelected && styles.monthTextSelected,
+                    isCurrent && styles.monthTextCurrent
+                  ]}
                 >
                   {month}
                 </Text>
@@ -62,11 +64,57 @@ export const MonthSelector: React.FC<MonthSelectorProps> = ({
       </ScrollView>
       <TouchableOpacity
         onPress={onTodayPress}
-        className="ml-2 mr-4 px-4 py-2 rounded-full bg-green-600"
+        style={styles.todayButton}
         activeOpacity={0.7}
       >
-        <Text className="text-sm font-semibold text-white">Today</Text>
+        <Text style={styles.todayButtonText}>Today</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingLeft: 16,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  scrollContent: {
+    gap: 8,
+    paddingRight: 8,
+  },
+  monthChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 16,
+  },
+  monthText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  monthTextSelected: {
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  monthTextCurrent: {
+    fontWeight: '700',
+  },
+  todayButton: {
+    marginLeft: 8,
+    marginRight: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 16,
+    backgroundColor: '#10B981',
+  },
+  todayButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+});

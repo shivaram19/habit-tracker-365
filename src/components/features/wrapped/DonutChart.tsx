@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { MotiView } from 'moti';
 import { CategoryStats } from '@/types';
 
@@ -15,49 +15,47 @@ export const DonutChart: React.FC<DonutChartProps> = ({ data, totalHours }) => {
 
   if (topCategories.length === 0) {
     return (
-      <View className="p-8 items-center">
-        <Text className="text-base text-gray-400">No data available</Text>
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>No data available</Text>
       </View>
     );
   }
 
   return (
-    <View className="py-4">
-      <View className="items-center mb-6">
-        <Text className="text-5xl font-bold text-gray-900">{totalHours}</Text>
-        <Text className="text-base font-semibold text-gray-600">hours tracked</Text>
+    <View style={styles.container}>
+      <View style={styles.totalContainer}>
+        <Text style={styles.totalHours}>{totalHours}</Text>
+        <Text style={styles.totalLabel}>hours tracked</Text>
       </View>
 
-      <View className="gap-4">
+      <View style={styles.categoriesList}>
         {topCategories.map((cat, index) => (
           <MotiView
             key={cat.id}
             from={{ opacity: 0, translateX: -20 }}
             animate={{ opacity: 1, translateX: 0 }}
             transition={{ type: 'timing', duration: 400, delay: index * 100 }}
-            className="flex-row items-center gap-3"
+            style={styles.categoryRow}
           >
             <View
-              className="w-4 h-4 rounded-full"
-              style={{ backgroundColor: cat.color }}
+              style={[styles.colorDot, { backgroundColor: cat.color }]}
             />
-            <View className="flex-1">
-              <Text className="text-sm font-semibold text-gray-700 mb-1.5">
+            <View style={styles.categoryContent}>
+              <Text style={styles.categoryName}>
                 {cat.name}
               </Text>
-              <View className="h-2 bg-gray-100 rounded-full overflow-hidden">
+              <View style={styles.barBackground}>
                 <MotiView
                   from={{ width: '0%' }}
                   animate={{ width: `${cat.percentage}%` }}
                   transition={{ type: 'timing', duration: 800, delay: index * 100 + 200 }}
-                  className="h-full rounded-full"
-                  style={{ backgroundColor: cat.color }}
+                  style={[styles.barFill, { backgroundColor: cat.color }]}
                 />
               </View>
             </View>
-            <View className="items-end min-w-[60px]">
-              <Text className="text-base font-bold text-gray-900">{cat.hours}h</Text>
-              <Text className="text-xs font-semibold text-gray-600">
+            <View style={styles.statsContainer}>
+              <Text style={styles.hoursText}>{cat.hours}h</Text>
+              <Text style={styles.percentageText}>
                 {cat.percentage.toFixed(1)}%
               </Text>
             </View>
@@ -67,3 +65,77 @@ export const DonutChart: React.FC<DonutChartProps> = ({ data, totalHours }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  emptyContainer: {
+    padding: 32,
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#9CA3AF',
+  },
+  container: {
+    paddingVertical: 16,
+  },
+  totalContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  totalHours: {
+    fontSize: 48,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  totalLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  categoriesList: {
+    gap: 16,
+  },
+  categoryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  colorDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+  },
+  categoryContent: {
+    flex: 1,
+  },
+  categoryName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 6,
+  },
+  barBackground: {
+    height: 8,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  barFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  statsContainer: {
+    alignItems: 'flex-end',
+    minWidth: 60,
+  },
+  hoursText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  percentageText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+});

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { MotiView } from 'moti';
 import { TopItem } from '@/types';
 
@@ -16,42 +16,42 @@ export const TopItemsList: React.FC<TopItemsListProps> = ({
 }) => {
   if (items.length === 0) {
     return (
-      <View className="mb-6">
-        <Text className="text-lg font-bold text-gray-900 mb-4">{title}</Text>
-        <View className="p-8 items-center">
-          <Text className="text-base text-gray-400">No items yet</Text>
+      <View style={styles.emptySection}>
+        <Text style={styles.title}>{title}</Text>
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No items yet</Text>
         </View>
       </View>
     );
   }
 
   return (
-    <View className="mb-6">
-      <Text className="text-lg font-bold text-gray-900 mb-4">{title}</Text>
-      <ScrollView className="max-h-[400px]">
+    <View style={styles.section}>
+      <Text style={styles.title}>{title}</Text>
+      <ScrollView style={styles.listScroll}>
         {items.map((item, index) => (
           <MotiView
             key={`${item.name}-${index}`}
             from={{ opacity: 0, translateX: -20 }}
             animate={{ opacity: 1, translateX: 0 }}
             transition={{ type: 'timing', duration: 300, delay: index * 50 }}
-            className="flex-row items-center py-3 px-4 bg-gray-50 rounded-xl mb-2"
+            style={styles.itemCard}
           >
-            <View className="w-10 h-10 rounded-full bg-blue-500 items-center justify-center mr-3">
-              <Text className="text-sm font-bold text-white">#{index + 1}</Text>
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>#{index + 1}</Text>
             </View>
-            <View className="flex-1">
-              <Text className="text-base font-semibold text-gray-900 mb-1">
+            <View style={styles.itemContent}>
+              <Text style={styles.itemName}>
                 {item.name}
               </Text>
-              <View className="flex-row items-center gap-1.5">
-                <Text className="text-sm font-semibold text-gray-600">
+              <View style={styles.itemStats}>
+                <Text style={styles.countText}>
                   {item.count}x
                 </Text>
                 {showSpend && (
                   <>
-                    <Text className="text-sm text-gray-400">•</Text>
-                    <Text className="text-sm font-semibold text-green-600">
+                    <Text style={styles.dot}>•</Text>
+                    <Text style={styles.spendText}>
                       ${item.totalSpend.toFixed(2)}
                     </Text>
                   </>
@@ -64,3 +64,80 @@ export const TopItemsList: React.FC<TopItemsListProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  emptySection: {
+    marginBottom: 24,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 16,
+  },
+  emptyContainer: {
+    padding: 32,
+    alignItems: 'center',
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#9CA3AF',
+  },
+  listScroll: {
+    maxHeight: 400,
+  },
+  itemCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+  badge: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#3B82F6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  badgeText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  itemContent: {
+    flex: 1,
+  },
+  itemName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  itemStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  countText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  dot: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  spendText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#10B981',
+  },
+});

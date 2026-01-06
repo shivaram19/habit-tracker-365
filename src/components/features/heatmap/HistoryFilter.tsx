@@ -59,11 +59,11 @@ export const HistoryFilter: React.FC<HistoryFilterProps> = ({
   };
 
   return (
-    <View className="flex-row items-center gap-2 px-4 py-3 bg-white border-b border-gray-200">
-      <View className="flex-1 flex-row items-center gap-2 bg-gray-100 px-3 py-2.5 rounded-lg">
+    <View style={styles.container}>
+      <View style={styles.searchContainer}>
         <Search size={20} color="#9CA3AF" />
         <TextInput
-          className="flex-1 text-base text-gray-900"
+          style={styles.searchInput}
           placeholder="Search highlights..."
           value={filters.searchQuery}
           onChangeText={(text) =>
@@ -74,49 +74,42 @@ export const HistoryFilter: React.FC<HistoryFilterProps> = ({
       </View>
 
       <TouchableOpacity
-        className={`p-2.5 rounded-lg ${
-          hasActiveFilters ? 'bg-blue-500' : 'bg-gray-100'
-        }`}
+        style={[styles.filterButton, hasActiveFilters && styles.filterButtonActive]}
         onPress={handleOpenModal}
       >
         <Filter size={20} color={hasActiveFilters ? '#FFFFFF' : '#6B7280'} />
       </TouchableOpacity>
 
       {hasActiveFilters && (
-        <TouchableOpacity className="p-2.5" onPress={onClearFilters}>
+        <TouchableOpacity style={styles.clearButton} onPress={onClearFilters}>
           <X size={20} color="#DC2626" />
         </TouchableOpacity>
       )}
 
       <Modal visible={showModal} onClose={() => setShowModal(false)}>
-        <View className="max-h-[80%] p-6">
-          <View className="flex-row justify-between items-center mb-6">
-            <Text className="text-2xl font-bold text-gray-900">Filter History</Text>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>Filter History</Text>
             <TouchableOpacity onPress={() => setShowModal(false)}>
               <X size={24} color="#6B7280" />
             </TouchableOpacity>
           </View>
 
-          <ScrollView className="max-h-[400px]">
-            <View className="mb-6">
-              <Text className="text-base font-semibold text-gray-700 mb-3">Category</Text>
-              <View className="flex-row flex-wrap gap-2">
+          <ScrollView style={styles.modalScroll}>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Category</Text>
+              <View style={styles.categoryGrid}>
                 <TouchableOpacity
-                  className={`px-4 py-2.5 rounded-lg border ${
-                    tempFilters.categoryFilter === null
-                      ? 'bg-blue-500 border-blue-500'
-                      : 'bg-white border-gray-300'
-                  }`}
+                  style={[
+                    styles.categoryChip,
+                    tempFilters.categoryFilter === null ? styles.categoryChipSelected : styles.categoryChipUnselected
+                  ]}
                   onPress={() =>
                     setTempFilters({ ...tempFilters, categoryFilter: null })
                   }
                 >
                   <Text
-                    className={`text-sm font-medium ${
-                      tempFilters.categoryFilter === null
-                        ? 'text-white'
-                        : 'text-gray-600'
-                    }`}
+                    style={tempFilters.categoryFilter === null ? styles.categoryTextSelected : styles.categoryText}
                   >
                     All
                   </Text>
@@ -126,20 +119,18 @@ export const HistoryFilter: React.FC<HistoryFilterProps> = ({
                   return (
                     <TouchableOpacity
                       key={cat.id}
-                      className="px-4 py-2.5 rounded-lg border"
-                      style={{
-                        backgroundColor: isSelected ? cat.color : '#FFFFFF',
-                        borderColor: isSelected ? cat.color : '#D1D5DB',
-                      }}
+                      style={[
+                        styles.categoryChip,
+                        {
+                          backgroundColor: isSelected ? cat.color : '#FFFFFF',
+                          borderColor: isSelected ? cat.color : '#D1D5DB',
+                        }
+                      ]}
                       onPress={() =>
                         setTempFilters({ ...tempFilters, categoryFilter: cat.id })
                       }
                     >
-                      <Text
-                        className={`text-sm ${
-                          isSelected ? 'text-white font-semibold' : 'text-gray-600 font-medium'
-                        }`}
-                      >
+                      <Text style={isSelected ? styles.categoryTextSelected : styles.categoryText}>
                         {cat.name}
                       </Text>
                     </TouchableOpacity>
@@ -148,13 +139,13 @@ export const HistoryFilter: React.FC<HistoryFilterProps> = ({
               </View>
             </View>
 
-            <View className="mb-6">
-              <Text className="text-base font-semibold text-gray-700 mb-3">Spending Range</Text>
-              <View className="flex-row gap-3">
-                <View className="flex-1">
-                  <Text className="text-sm font-medium text-gray-600 mb-1.5">Min ($)</Text>
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Spending Range</Text>
+              <View style={styles.rangeRow}>
+                <View style={styles.rangeInput}>
+                  <Text style={styles.rangeLabel}>Min ($)</Text>
                   <TextInput
-                    className="border border-gray-300 rounded-lg px-3 py-2.5 text-base text-gray-900"
+                    style={styles.input}
                     placeholder="0"
                     value={tempFilters.minSpend?.toString() || ''}
                     onChangeText={(text) =>
@@ -167,10 +158,10 @@ export const HistoryFilter: React.FC<HistoryFilterProps> = ({
                     placeholderTextColor="#9CA3AF"
                   />
                 </View>
-                <View className="flex-1">
-                  <Text className="text-sm font-medium text-gray-600 mb-1.5">Max ($)</Text>
+                <View style={styles.rangeInput}>
+                  <Text style={styles.rangeLabel}>Max ($)</Text>
                   <TextInput
-                    className="border border-gray-300 rounded-lg px-3 py-2.5 text-base text-gray-900"
+                    style={styles.input}
                     placeholder="1000"
                     value={tempFilters.maxSpend?.toString() || ''}
                     onChangeText={(text) =>
@@ -187,15 +178,15 @@ export const HistoryFilter: React.FC<HistoryFilterProps> = ({
             </View>
           </ScrollView>
 
-          <View className="flex-row gap-3 mt-6">
-            <View className="flex-1">
+          <View style={styles.buttonRow}>
+            <View style={styles.buttonHalf}>
               <Button
                 title="Clear All"
                 onPress={handleClearAll}
                 variant="secondary"
               />
             </View>
-            <View className="flex-1">
+            <View style={styles.buttonHalf}>
               <Button
                 title="Apply"
                 onPress={handleApplyFilters}
@@ -207,3 +198,128 @@ export const HistoryFilter: React.FC<HistoryFilterProps> = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#F3F4F6',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#111827',
+  },
+  filterButton: {
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: '#F3F4F6',
+  },
+  filterButtonActive: {
+    backgroundColor: '#3B82F6',
+  },
+  clearButton: {
+    padding: 10,
+  },
+  modalContent: {
+    maxHeight: '80%',
+    padding: 24,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  modalScroll: {
+    maxHeight: 400,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 12,
+  },
+  categoryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  categoryChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  categoryChipSelected: {
+    backgroundColor: '#3B82F6',
+    borderColor: '#3B82F6',
+  },
+  categoryChipUnselected: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#D1D5DB',
+  },
+  categoryText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  categoryTextSelected: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  rangeRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  rangeInput: {
+    flex: 1,
+  },
+  rangeLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+    marginBottom: 6,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    color: '#111827',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 24,
+  },
+  buttonHalf: {
+    flex: 1,
+  },
+});

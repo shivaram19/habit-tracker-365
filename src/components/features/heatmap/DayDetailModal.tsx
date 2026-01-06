@@ -40,53 +40,51 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
 
   return (
     <Modal visible={visible} onClose={onClose}>
-      <View className="max-h-[90%]">
-        <View className="flex-row justify-between items-start p-5 border-b border-gray-200">
-          <View className="flex-1 mr-4">
-            <Text className="text-lg font-bold text-gray-900 mb-1">{formattedDate}</Text>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.headerContent}>
+            <Text style={styles.date}>{formattedDate}</Text>
             {day.highlight && (
-              <Text className="text-sm italic text-gray-600">"{day.highlight}"</Text>
+              <Text style={styles.highlight}>"{day.highlight}"</Text>
             )}
           </View>
-          <TouchableOpacity onPress={onClose} className="p-1">
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <X size={24} color="#6B7280" />
           </TouchableOpacity>
         </View>
 
-        <ScrollView className="p-5">
-          <View className="mb-6">
-            <Text className="text-base font-bold text-gray-900 mb-3">24-Hour Breakdown</Text>
-            <View className="gap-2">
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>24-Hour Breakdown</Text>
+            <View style={styles.breakdownList}>
               {hourlyLogs.map((categoryId, hour) => {
                 const category = getCategoryById(categoryId);
                 return (
-                  <View key={hour} className="flex-row items-center gap-3">
-                    <Text className="w-[50px] text-xs font-semibold text-gray-600">
+                  <View key={hour} style={styles.hourRow}>
+                    <Text style={styles.hourLabel}>
                       {hour.toString().padStart(2, '0')}:00
                     </Text>
                     <View
-                      className="w-10 h-5 rounded"
-                      style={{ backgroundColor: category.color }}
+                      style={[styles.hourColorBlock, { backgroundColor: category.color }]}
                     />
-                    <Text className="text-xs text-gray-700">{category.name}</Text>
+                    <Text style={styles.hourCategory}>{category.name}</Text>
                   </View>
                 );
               })}
             </View>
           </View>
 
-          <View className="mb-6">
-            <Text className="text-base font-bold text-gray-900 mb-3">Category Summary</Text>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Category Summary</Text>
             {categoryEntries.map(({ category, hours }) => (
-              <View key={category.id} className="flex-row items-center py-2 gap-3">
+              <View key={category.id} style={styles.summaryRow}>
                 <View
-                  className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: category.color }}
+                  style={[styles.summaryDot, { backgroundColor: category.color }]}
                 />
-                <Text className="flex-1 text-base font-medium text-gray-700">
+                <Text style={styles.summaryName}>
                   {category.name}
                 </Text>
-                <Text className="text-sm font-semibold text-gray-600">
+                <Text style={styles.summaryHours}>
                   {hours} {hours === 1 ? 'hour' : 'hours'}
                 </Text>
               </View>
@@ -94,9 +92,9 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
           </View>
 
           {day.total_spend > 0 && (
-            <View className="mb-6">
-              <Text className="text-base font-bold text-gray-900 mb-3">Total Spending</Text>
-              <Text className="text-3xl font-bold text-green-600">
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Total Spending</Text>
+              <Text style={styles.totalSpend}>
                 ${Number(day.total_spend).toFixed(2)}
               </Text>
             </View>
@@ -106,3 +104,97 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    maxHeight: '90%',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  headerContent: {
+    flex: 1,
+    marginRight: 16,
+  },
+  date: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  highlight: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    color: '#6B7280',
+  },
+  closeButton: {
+    padding: 4,
+  },
+  scrollView: {
+    padding: 20,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 12,
+  },
+  breakdownList: {
+    gap: 8,
+  },
+  hourRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  hourLabel: {
+    width: 50,
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  hourColorBlock: {
+    width: 40,
+    height: 20,
+    borderRadius: 4,
+  },
+  hourCategory: {
+    fontSize: 12,
+    color: '#374151',
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    gap: 12,
+  },
+  summaryDot: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+  },
+  summaryName: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#374151',
+  },
+  summaryHours: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  totalSpend: {
+    fontSize: 36,
+    fontWeight: '700',
+    color: '#10B981',
+  },
+});

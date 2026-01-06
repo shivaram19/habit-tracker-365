@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Redirect } from 'expo-router';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useAuth } from '@/context/AuthContext';
 
 export default function Index() {
@@ -8,7 +8,7 @@ export default function Index() {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center bg-white">
+      <View style={styles.container}>
         <ActivityIndicator size="large" color="#4C6EF5" />
       </View>
     );
@@ -20,3 +20,12 @@ export default function Index() {
 
   return <Redirect href="/auth/login" />;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+  },
+});

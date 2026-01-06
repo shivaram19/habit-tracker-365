@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MotiView } from 'moti';
 import { getCategoryColor } from '@/utils/categories';
 import { format } from 'date-fns';
@@ -20,25 +20,58 @@ export const HeatmapDayRow: React.FC<HeatmapDayRowProps> = ({
   const dayOfMonth = format(dateObj, 'd');
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7} className="flex-row items-center py-1 px-4">
+    <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={styles.container}>
       <MotiView
         from={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ type: 'timing', duration: 300 }}
-        className="w-[50px] mr-3 items-start"
+        style={styles.dateContainer}
       >
-        <Text className="text-[11px] font-semibold text-gray-600">{dayOfWeek}</Text>
-        <Text className="text-base font-bold text-gray-900">{dayOfMonth}</Text>
+        <Text style={styles.dayOfWeek}>{dayOfWeek}</Text>
+        <Text style={styles.dayOfMonth}>{dayOfMonth}</Text>
       </MotiView>
-      <View className="flex-1 flex-row gap-[1px]">
+      <View style={styles.hoursContainer}>
         {hourlyLogs.map((categoryId, index) => (
           <View
             key={index}
-            className="flex-1 h-5 rounded-[2px]"
-            style={{ backgroundColor: getCategoryColor(categoryId) }}
+            style={[styles.hourBlock, { backgroundColor: getCategoryColor(categoryId) }]}
           />
         ))}
       </View>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 16,
+  },
+  dateContainer: {
+    width: 50,
+    marginRight: 12,
+    alignItems: 'flex-start',
+  },
+  dayOfWeek: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  dayOfMonth: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  hoursContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    gap: 1,
+  },
+  hourBlock: {
+    flex: 1,
+    height: 20,
+    borderRadius: 2,
+  },
+});

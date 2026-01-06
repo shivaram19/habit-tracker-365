@@ -35,18 +35,19 @@ const ToastItem: React.FC<{ toast: ToastMessage; getBackgroundColor: (type: Toas
 
   return (
     <Animated.View
-      className="mb-2"
-      style={{
-        opacity: fadeAnim,
-        transform: [{ translateY: translateYAnim }],
-      }}
+      style={[
+        styles.toastItem,
+        {
+          opacity: fadeAnim,
+          transform: [{ translateY: translateYAnim }],
+        }
+      ]}
     >
       <View
-        className="flex-row items-center p-4 rounded-xl shadow-lg"
-        style={{ backgroundColor: getBackgroundColor(toast.type) }}
+        style={[styles.toastContent, { backgroundColor: getBackgroundColor(toast.type) }]}
       >
-        <View className="mr-3">{getIcon(toast.type)}</View>
-        <Text className="flex-1 text-gray-800 font-medium">{toast.message}</Text>
+        <View style={styles.iconContainer}>{getIcon(toast.type)}</View>
+        <Text style={styles.message}>{toast.message}</Text>
       </View>
     </Animated.View>
   );
@@ -91,7 +92,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <View className="absolute top-16 left-4 right-4 z-50" pointerEvents="box-none">
+      <View style={styles.toastContainer} pointerEvents="box-none">
         {toasts.map((toast) => (
           <ToastItem
             key={toast.id}
@@ -104,6 +105,38 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     </ToastContext.Provider>
   );
 };
+
+const styles = StyleSheet.create({
+  toastItem: {
+    marginBottom: 8,
+  },
+  toastContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  iconContainer: {
+    marginRight: 12,
+  },
+  message: {
+    flex: 1,
+    color: '#1F2937',
+    fontWeight: '500',
+  },
+  toastContainer: {
+    position: 'absolute',
+    top: 64,
+    left: 16,
+    right: 16,
+    zIndex: 50,
+  },
+});
 
 export const useToast = () => {
   const context = useContext(ToastContext);
