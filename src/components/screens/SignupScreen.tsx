@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
+import { useTheme } from '@/context/ThemeContext';
 import { Button } from '@/components/shared/Button';
 import { Input } from '@/components/shared/Input';
 import { validateSignupForm, getPasswordStrength } from '@/utils/validators';
@@ -25,6 +26,7 @@ export const SignupScreen = () => {
   const [loading, setLoading] = useState(false);
   const { signUp } = useAuth();
   const { showToast } = useToast();
+  const { theme } = useTheme();
 
   // Animation values
   const fadeAnim = new Animated.Value(0);
@@ -50,11 +52,11 @@ export const SignupScreen = () => {
   const getStrengthColor = () => {
     switch (passwordStrength) {
       case 'weak':
-        return '#EF4444';
+        return theme.colors.error[500];
       case 'medium':
-        return '#F59E0B';
+        return theme.colors.warning[500];
       case 'strong':
-        return '#10B981';
+        return theme.colors.success[500];
     }
   };
 
@@ -94,13 +96,17 @@ export const SignupScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background.primary }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={{
+            flex: 1,
+            paddingHorizontal: theme.spacing[6],
+            justifyContent: 'center',
+          }}
           keyboardShouldPersistTaps="handled"
         >
           <Animated.View
@@ -112,16 +118,24 @@ export const SignupScreen = () => {
               }
             ]}
           >
-            <View style={styles.header}>
-              <Text style={styles.title}>
+            <View style={{ marginBottom: theme.spacing[8] }}>
+              <Text style={{
+                fontSize: theme.typography.fontSizes['4xl'],
+                fontWeight: theme.typography.fontWeights.bold,
+                color: theme.colors.text.primary,
+                marginBottom: theme.spacing[2],
+              }}>
                 Create Account
               </Text>
-              <Text style={styles.subtitle}>
+              <Text style={{
+                fontSize: theme.typography.fontSizes.lg,
+                color: theme.colors.text.tertiary,
+              }}>
                 Start tracking your life by the hour
               </Text>
             </View>
 
-            <View style={styles.formContainer}>
+            <View style={{ marginBottom: theme.spacing[6] }}>
               <Input
                 label="Name"
                 value={name}
@@ -147,20 +161,31 @@ export const SignupScreen = () => {
               />
 
               {password.length > 0 && (
-                <View style={styles.strengthContainer}>
+                <View style={{ marginBottom: theme.spacing[4] }}>
                   <View style={styles.strengthRow}>
-                    <View style={styles.strengthBarBackground}>
+                    <View style={{
+                      flex: 1,
+                      height: 4,
+                      backgroundColor: theme.colors.neutral[200],
+                      borderRadius: theme.borderRadius.sm,
+                      marginRight: theme.spacing[2],
+                    }}>
                       <View
                         style={[
                           styles.strengthBar,
                           {
                             backgroundColor: getStrengthColor(),
                             width: getStrengthWidth(),
+                            borderRadius: theme.borderRadius.sm,
                           }
                         ]}
                       />
                     </View>
-                    <Text style={styles.strengthText}>
+                    <Text style={{
+                      fontSize: theme.typography.fontSizes.sm,
+                      color: theme.colors.text.tertiary,
+                      textTransform: 'capitalize',
+                    }}>
                       {passwordStrength}
                     </Text>
                   </View>
@@ -184,9 +209,14 @@ export const SignupScreen = () => {
             />
 
             <View style={styles.footer}>
-              <Text style={styles.footerText}>Already have an account? </Text>
+              <Text style={{ color: theme.colors.text.tertiary }}>Already have an account? </Text>
               <TouchableOpacity onPress={() => router.push('/auth/login')}>
-                <Text style={styles.linkText}>Sign In</Text>
+                <Text style={{
+                  color: theme.colors.primary[600],
+                  fontWeight: theme.typography.fontWeights.semibold,
+                }}>
+                  Sign In
+                </Text>
               </TouchableOpacity>
             </View>
           </Animated.View>
@@ -197,70 +227,22 @@ export const SignupScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
   keyboardView: {
     flex: 1,
   },
-  scrollContent: {
-    flex: 1,
-    paddingHorizontal: 24,
-    justifyContent: 'center',
-  },
   animatedContainer: {
     width: '100%',
-  },
-  header: {
-    marginBottom: 32,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#6B7280',
-  },
-  formContainer: {
-    marginBottom: 24,
-  },
-  strengthContainer: {
-    marginBottom: 16,
   },
   strengthRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  strengthBarBackground: {
-    flex: 1,
-    height: 4,
-    backgroundColor: '#E5E7EB',
-    borderRadius: 2,
-    marginRight: 8,
-  },
   strengthBar: {
     height: '100%',
-    borderRadius: 2,
-  },
-  strengthText: {
-    fontSize: 14,
-    color: '#6B7280',
-    textTransform: 'capitalize',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 24,
-  },
-  footerText: {
-    color: '#6B7280',
-  },
-  linkText: {
-    color: '#2563EB',
-    fontWeight: '600',
   },
 });

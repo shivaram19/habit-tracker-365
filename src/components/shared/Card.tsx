@@ -1,34 +1,26 @@
 import React from 'react';
-import { View, Platform, StyleSheet } from 'react-native';
+import { View, Platform } from 'react-native';
+import { useTheme } from '@/context/ThemeContext';
 
 interface CardProps {
   children: React.ReactNode;
 }
 
 export const Card: React.FC<CardProps> = ({ children }) => {
+  const { theme } = useTheme();
+
   return (
-    <View style={[styles.card, Platform.OS === 'android' && styles.androidShadow]}>
+    <View
+      style={[
+        {
+          backgroundColor: theme.colors.background.primary,
+          borderRadius: theme.borderRadius.xl,
+          padding: theme.spacing[4],
+        },
+        theme.getShadow('md'),
+      ]}
+    >
       {children}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-      },
-      android: {},
-    }),
-  },
-  androidShadow: {
-    elevation: 3,
-  },
-});

@@ -4,9 +4,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
+import { useTheme } from '@/context/ThemeContext';
 import { useProfile } from '@/hooks/useProfile';
 import { Button } from '@/components/shared/Button';
 import { Input } from '@/components/shared/Input';
+import { ThemeToggle } from '@/components/shared/ThemeToggle';
 import { exportService } from '@/utils/export';
 import { User } from 'lucide-react-native';
 
@@ -14,6 +16,7 @@ export default function ProfileScreen() {
   const router = useRouter();
   const { user, signOut } = useAuth();
   const { showToast } = useToast();
+  const { theme } = useTheme();
   const { profile, isLoading, updateProfile, isUpdating } = useProfile();
 
   const [name, setName] = useState('');
@@ -67,28 +70,67 @@ export default function ProfileScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background.primary }}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#3B82F6" />
+          <ActivityIndicator size="large" color={theme.colors.primary[600]} />
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Profile</Text>
-        <Text style={styles.subtitle}>Manage your account</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background.primary }}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingHorizontal: theme.spacing[6], paddingVertical: theme.spacing[8] }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: theme.spacing[2] }}>
+          <View>
+            <Text style={{
+              fontSize: theme.typography.fontSizes['3xl'],
+              fontWeight: theme.typography.fontWeights.bold,
+              color: theme.colors.text.primary,
+              marginBottom: theme.spacing[2],
+            }}>
+              Profile
+            </Text>
+            <Text style={{
+              fontSize: theme.typography.fontSizes.lg,
+              color: theme.colors.text.tertiary,
+            }}>
+              Manage your account
+            </Text>
+          </View>
+          <ThemeToggle />
+        </View>
 
-        <View style={styles.card}>
+        <View style={{
+          backgroundColor: theme.colors.background.secondary,
+          borderRadius: theme.borderRadius.lg,
+          padding: theme.spacing[6],
+          marginBottom: theme.spacing[4],
+          marginTop: theme.spacing[8],
+        }}>
           <View style={styles.profileHeader}>
-            <View style={styles.avatar}>
-              <User size={32} color="#FFFFFF" />
+            <View style={{
+              width: 64,
+              height: 64,
+              borderRadius: 32,
+              backgroundColor: theme.colors.primary[600],
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginRight: theme.spacing[4],
+            }}>
+              <User size={32} color={theme.colors.text.inverse} />
             </View>
             <View style={styles.emailContainer}>
-              <Text style={styles.emailLabel}>Email</Text>
-              <Text style={styles.emailText}>{user?.email}</Text>
+              <Text style={{ fontSize: theme.typography.fontSizes.sm, color: theme.colors.text.tertiary, marginBottom: theme.spacing[1] }}>
+                Email
+              </Text>
+              <Text style={{
+                fontSize: theme.typography.fontSizes.base,
+                fontWeight: theme.typography.fontWeights.semibold,
+                color: theme.colors.text.primary,
+              }}>
+                {user?.email}
+              </Text>
             </View>
           </View>
 
@@ -121,8 +163,15 @@ export default function ProfileScreen() {
             </View>
           ) : (
             <View>
-              <Text style={styles.nameLabel}>Display Name</Text>
-              <Text style={styles.nameText}>
+              <Text style={{ fontSize: theme.typography.fontSizes.sm, color: theme.colors.text.tertiary, marginBottom: theme.spacing[1] }}>
+                Display Name
+              </Text>
+              <Text style={{
+                fontSize: theme.typography.fontSizes.lg,
+                fontWeight: theme.typography.fontWeights.semibold,
+                color: theme.colors.text.primary,
+                marginBottom: theme.spacing[4],
+              }}>
                 {profile?.name || 'Not set'}
               </Text>
               <Button title="Edit Name" onPress={handleStartEdit} variant="secondary" fullWidth />
@@ -130,7 +179,7 @@ export default function ProfileScreen() {
           )}
         </View>
 
-        <View style={styles.exportButton}>
+        <View style={{ marginBottom: theme.spacing[4] }}>
           <Button
             title="Export My Data"
             onPress={handleExportData}
@@ -147,76 +196,21 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
   scrollView: {
     flex: 1,
-  },
-  content: {
-    paddingHorizontal: 24,
-    paddingVertical: 32,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: 30,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#6B7280',
-    marginBottom: 32,
-  },
-  card: {
-    backgroundColor: '#F9FAFB',
-    borderRadius: 12,
-    padding: 24,
-    marginBottom: 16,
-  },
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 16,
   },
-  avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#2563EB',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 16,
-  },
   emailContainer: {
     flex: 1,
-  },
-  emailLabel: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 4,
-  },
-  emailText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  nameLabel: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginBottom: 4,
-  },
-  nameText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 16,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -225,8 +219,5 @@ const styles = StyleSheet.create({
   },
   buttonHalf: {
     flex: 1,
-  },
-  exportButton: {
-    marginBottom: 16,
   },
 });

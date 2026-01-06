@@ -1,6 +1,7 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, ViewStyle } from 'react-native';
 import * as Haptics from 'expo-haptics';
+import { useTheme } from '@/context/ThemeContext';
 
 interface ButtonProps {
   title: string;
@@ -19,34 +20,43 @@ export const Button: React.FC<ButtonProps> = ({
   disabled = false,
   fullWidth = false,
 }) => {
+  const { theme } = useTheme();
+
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onPress();
   };
 
-  const getVariantStyles = () => {
+  const getVariantStyles = (): ViewStyle => {
     switch (variant) {
       case 'primary':
-        return styles.primaryButton;
+        return {
+          backgroundColor: theme.colors.primary[600],
+        };
       case 'secondary':
-        return styles.secondaryButton;
+        return {
+          backgroundColor: theme.colors.neutral[200],
+        };
       case 'danger':
-        return styles.dangerButton;
+        return {
+          backgroundColor: theme.colors.error[600],
+        };
       default:
-        return styles.primaryButton;
+        return {
+          backgroundColor: theme.colors.primary[600],
+        };
     }
   };
 
-  const getTextStyles = () => {
+  const getTextColor = () => {
     switch (variant) {
       case 'primary':
-        return styles.primaryText;
-      case 'secondary':
-        return styles.secondaryText;
       case 'danger':
-        return styles.dangerText;
+        return theme.colors.text.inverse;
+      case 'secondary':
+        return theme.colors.text.primary;
       default:
-        return styles.primaryText;
+        return theme.colors.text.inverse;
     }
   };
 
@@ -57,7 +67,14 @@ export const Button: React.FC<ButtonProps> = ({
       onPress={handlePress}
       disabled={isDisabled}
       style={[
-        styles.button,
+        {
+          paddingVertical: theme.spacing[4],
+          paddingHorizontal: theme.spacing[6],
+          borderRadius: theme.borderRadius.lg,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
         getVariantStyles(),
         fullWidth && styles.fullWidth,
         isDisabled && styles.disabled,
@@ -65,49 +82,29 @@ export const Button: React.FC<ButtonProps> = ({
       activeOpacity={0.8}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'secondary' ? '#374151' : '#ffffff'} />
+        <ActivityIndicator color={getTextColor()} />
       ) : (
-        <Text style={[styles.text, getTextStyles()]}>{title}</Text>
+        <Text
+          style={[
+            {
+              fontSize: theme.typography.fontSizes.base,
+              fontWeight: theme.typography.fontWeights.semibold,
+              color: getTextColor(),
+            },
+          ]}
+        >
+          {title}
+        </Text>
       )}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   fullWidth: {
     width: '100%',
   },
   disabled: {
     opacity: 0.5,
-  },
-  primaryButton: {
-    backgroundColor: '#2563EB',
-  },
-  secondaryButton: {
-    backgroundColor: '#E5E7EB',
-  },
-  dangerButton: {
-    backgroundColor: '#DC2626',
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  primaryText: {
-    color: '#FFFFFF',
-  },
-  secondaryText: {
-    color: '#1F2937',
-  },
-  dangerText: {
-    color: '#FFFFFF',
   },
 });

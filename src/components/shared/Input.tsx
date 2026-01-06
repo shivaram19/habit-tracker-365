@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
+import { useTheme } from '@/context/ThemeContext';
 
 interface InputProps {
   label?: string;
@@ -25,11 +26,23 @@ export const Input: React.FC<InputProps> = ({
   keyboardType = 'default',
   editable = true,
 }) => {
+  const { theme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
+    <View style={{ marginBottom: theme.spacing[4] }}>
+      {label && (
+        <Text
+          style={{
+            color: theme.colors.text.secondary,
+            fontWeight: theme.typography.fontWeights.medium,
+            marginBottom: theme.spacing[2],
+            fontSize: theme.typography.fontSizes.sm,
+          }}
+        >
+          {label}
+        </Text>
+      )}
       <View style={styles.inputWrapper}>
         <TextInput
           value={value}
@@ -40,11 +53,21 @@ export const Input: React.FC<InputProps> = ({
           keyboardType={keyboardType}
           editable={editable}
           style={[
-            styles.input,
-            error ? styles.inputError : styles.inputNormal,
+            {
+              backgroundColor: theme.colors.background.secondary,
+              borderWidth: 1,
+              borderRadius: theme.borderRadius.lg,
+              paddingHorizontal: theme.spacing[4],
+              paddingVertical: theme.spacing[3],
+              fontSize: theme.typography.fontSizes.base,
+              color: theme.colors.text.primary,
+            },
+            error
+              ? { borderColor: theme.colors.error[500] }
+              : { borderColor: theme.colors.border.primary },
             !editable && styles.inputDisabled,
           ]}
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor={theme.colors.text.tertiary}
         />
         {secureTextEntry && (
           <TouchableOpacity
@@ -52,43 +75,31 @@ export const Input: React.FC<InputProps> = ({
             style={styles.eyeIcon}
           >
             {showPassword ? (
-              <EyeOff size={20} color="#6B7280" />
+              <EyeOff size={20} color={theme.colors.text.tertiary} />
             ) : (
-              <Eye size={20} color="#6B7280" />
+              <Eye size={20} color={theme.colors.text.tertiary} />
             )}
           </TouchableOpacity>
         )}
       </View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && (
+        <Text
+          style={{
+            color: theme.colors.error[500],
+            fontSize: theme.typography.fontSizes.sm,
+            marginTop: theme.spacing[1],
+          }}
+        >
+          {error}
+        </Text>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 16,
-  },
-  label: {
-    color: '#374151',
-    fontWeight: '500',
-    marginBottom: 8,
-  },
   inputWrapper: {
     position: 'relative',
-  },
-  input: {
-    backgroundColor: '#F9FAFB',
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    fontSize: 16,
-  },
-  inputNormal: {
-    borderColor: '#E5E7EB',
-  },
-  inputError: {
-    borderColor: '#EF4444',
   },
   inputDisabled: {
     opacity: 0.5,
@@ -97,10 +108,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 16,
     top: 12,
-  },
-  errorText: {
-    color: '#EF4444',
-    fontSize: 14,
-    marginTop: 4,
   },
 });

@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/context/ToastContext';
+import { useTheme } from '@/context/ThemeContext';
 import { Button } from '@/components/shared/Button';
 import { Input } from '@/components/shared/Input';
 import { validateLoginForm } from '@/utils/validators';
@@ -23,6 +24,7 @@ export const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
   const { signIn } = useAuth();
   const { showToast } = useToast();
+  const { theme } = useTheme();
 
   // Animation values
   const fadeAnim = new Animated.Value(0);
@@ -63,13 +65,17 @@ export const LoginScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background.primary }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
         <ScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={{
+            flex: 1,
+            paddingHorizontal: theme.spacing[6],
+            justifyContent: 'center',
+          }}
           keyboardShouldPersistTaps="handled"
         >
           <Animated.View
@@ -81,16 +87,24 @@ export const LoginScreen = () => {
               }
             ]}
           >
-            <View style={styles.header}>
-              <Text style={styles.title}>
+            <View style={{ marginBottom: theme.spacing[8] }}>
+              <Text style={{
+                fontSize: theme.typography.fontSizes['4xl'],
+                fontWeight: theme.typography.fontWeights.bold,
+                color: theme.colors.text.primary,
+                marginBottom: theme.spacing[2],
+              }}>
                 Welcome Back
               </Text>
-              <Text style={styles.subtitle}>
+              <Text style={{
+                fontSize: theme.typography.fontSizes.lg,
+                color: theme.colors.text.tertiary,
+              }}>
                 Sign in to continue tracking your life
               </Text>
             </View>
 
-            <View style={styles.formContainer}>
+            <View style={{ marginBottom: theme.spacing[6] }}>
               <Input
                 label="Email"
                 value={email}
@@ -117,9 +131,14 @@ export const LoginScreen = () => {
             />
 
             <View style={styles.footer}>
-              <Text style={styles.footerText}>Don't have an account? </Text>
+              <Text style={{ color: theme.colors.text.tertiary }}>Don't have an account? </Text>
               <TouchableOpacity onPress={() => router.push('/auth/signup')}>
-                <Text style={styles.linkText}>Sign Up</Text>
+                <Text style={{
+                  color: theme.colors.primary[600],
+                  fontWeight: theme.typography.fontWeights.semibold,
+                }}>
+                  Sign Up
+                </Text>
               </TouchableOpacity>
             </View>
           </Animated.View>
@@ -130,47 +149,15 @@ export const LoginScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
   keyboardView: {
     flex: 1,
   },
-  scrollContent: {
-    flex: 1,
-    paddingHorizontal: 24,
-    justifyContent: 'center',
-  },
   animatedContainer: {
     width: '100%',
-  },
-  header: {
-    marginBottom: 32,
-  },
-  title: {
-    fontSize: 36,
-    fontWeight: '700',
-    color: '#111827',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#6B7280',
-  },
-  formContainer: {
-    marginBottom: 24,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 24,
-  },
-  footerText: {
-    color: '#6B7280',
-  },
-  linkText: {
-    color: '#2563EB',
-    fontWeight: '600',
   },
 });
