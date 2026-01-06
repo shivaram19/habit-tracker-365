@@ -84,27 +84,27 @@ export const ListItemForm: React.FC<ListItemFormProps> = ({
 
   return (
     <Modal visible={visible} onClose={onClose}>
-      <View className="p-6">
-        <View className="flex-row justify-between items-center mb-6">
-          <Text className="text-2xl font-bold text-gray-900">
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.title}>
             {initialData ? 'Edit Item' : 'Add Item'}
           </Text>
-          <TouchableOpacity onPress={onClose} className="p-1">
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <X size={24} color="#6B7280" />
           </TouchableOpacity>
         </View>
 
-        <ScrollView className="max-h-[500px]">
+        <ScrollView style={styles.scrollView}>
           {error && (
-            <View className="bg-red-100 p-3 rounded-lg mb-4">
-              <Text className="text-red-600 text-sm font-medium">{error}</Text>
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
             </View>
           )}
 
-          <View className="mb-5">
-            <Text className="text-sm font-semibold text-gray-700 mb-2">Item Name</Text>
+          <View style={styles.fieldContainer}>
+            <Text style={styles.label}>Item Name</Text>
             <TextInput
-              className="border border-gray-300 rounded-lg px-4 py-3 text-base text-gray-900 bg-white"
+              style={styles.input}
               value={name}
               onChangeText={setName}
               placeholder="e.g., Lunch at Cafe"
@@ -112,10 +112,10 @@ export const ListItemForm: React.FC<ListItemFormProps> = ({
             />
           </View>
 
-          <View className="mb-5">
-            <Text className="text-sm font-semibold text-gray-700 mb-2">Price ($)</Text>
+          <View style={styles.fieldContainer}>
+            <Text style={styles.label}>Price ($)</Text>
             <TextInput
-              className="border border-gray-300 rounded-lg px-4 py-3 text-base text-gray-900 bg-white"
+              style={styles.input}
               value={price}
               onChangeText={setPrice}
               placeholder="0.00"
@@ -124,26 +124,24 @@ export const ListItemForm: React.FC<ListItemFormProps> = ({
             />
           </View>
 
-          <View className="mb-5">
-            <Text className="text-sm font-semibold text-gray-700 mb-2">Category</Text>
-            <View className="flex-row flex-wrap gap-2">
+          <View style={styles.fieldContainer}>
+            <Text style={styles.label}>Category</Text>
+            <View style={styles.categoryGrid}>
               {spendingCategories.map((cat) => {
                 const isSelected = category === cat.id;
                 return (
                   <TouchableOpacity
                     key={cat.id}
-                    className="px-4 py-2.5 rounded-lg border"
-                    style={{
-                      backgroundColor: isSelected ? cat.color : '#FFFFFF',
-                      borderColor: isSelected ? cat.color : '#D1D5DB',
-                    }}
+                    style={[
+                      styles.categoryChip,
+                      {
+                        backgroundColor: isSelected ? cat.color : '#FFFFFF',
+                        borderColor: isSelected ? cat.color : '#D1D5DB',
+                      }
+                    ]}
                     onPress={() => setCategory(cat.id)}
                   >
-                    <Text
-                      className={`text-sm ${
-                        isSelected ? 'text-white font-semibold' : 'text-gray-600 font-medium'
-                      }`}
-                    >
+                    <Text style={isSelected ? styles.categoryTextSelected : styles.categoryText}>
                       {cat.name}
                     </Text>
                   </TouchableOpacity>
@@ -153,15 +151,15 @@ export const ListItemForm: React.FC<ListItemFormProps> = ({
           </View>
         </ScrollView>
 
-        <View className="flex-row gap-3 mt-6">
-          <View className="flex-1">
+        <View style={styles.buttonRow}>
+          <View style={styles.buttonHalf}>
             <Button
               title="Cancel"
               onPress={onClose}
               variant="secondary"
             />
           </View>
-          <View className="flex-1">
+          <View style={styles.buttonHalf}>
             <Button
               title={initialData ? 'Update' : 'Add'}
               onPress={handleSubmit}
@@ -173,3 +171,85 @@ export const ListItemForm: React.FC<ListItemFormProps> = ({
     </Modal>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 24,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  closeButton: {
+    padding: 4,
+  },
+  scrollView: {
+    maxHeight: 500,
+  },
+  errorContainer: {
+    backgroundColor: '#FEE2E2',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  errorText: {
+    color: '#DC2626',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  fieldContainer: {
+    marginBottom: 20,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#D1D5DB',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: '#111827',
+    backgroundColor: '#FFFFFF',
+  },
+  categoryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  categoryChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  categoryText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#6B7280',
+  },
+  categoryTextSelected: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 24,
+  },
+  buttonHalf: {
+    flex: 1,
+  },
+});

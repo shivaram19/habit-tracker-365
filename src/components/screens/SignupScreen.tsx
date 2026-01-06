@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Animated,
+  StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -49,11 +50,22 @@ export const SignupScreen = () => {
   const getStrengthColor = () => {
     switch (passwordStrength) {
       case 'weak':
-        return 'bg-red-500';
+        return '#EF4444';
       case 'medium':
-        return 'bg-yellow-500';
+        return '#F59E0B';
       case 'strong':
-        return 'bg-green-500';
+        return '#10B981';
+    }
+  };
+
+  const getStrengthWidth = () => {
+    switch (passwordStrength) {
+      case 'weak':
+        return '33%';
+      case 'medium':
+        return '66%';
+      case 'strong':
+        return '100%';
     }
   };
 
@@ -82,33 +94,34 @@ export const SignupScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1"
+        style={styles.keyboardView}
       >
         <ScrollView
-          contentContainerClassName="flex-1 px-6 justify-center"
+          contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Animated container */}
           <Animated.View
-            style={{
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            }}
-            className="w-full"
+            style={[
+              styles.animatedContainer,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              }
+            ]}
           >
-            <View className="mb-8">
-              <Text className="text-4xl font-bold text-gray-900 mb-2">
+            <View style={styles.header}>
+              <Text style={styles.title}>
                 Create Account
               </Text>
-              <Text className="text-gray-600 text-lg">
+              <Text style={styles.subtitle}>
                 Start tracking your life by the hour
               </Text>
             </View>
 
-            <View className="mb-6">
+            <View style={styles.formContainer}>
               <Input
                 label="Name"
                 value={name}
@@ -134,22 +147,20 @@ export const SignupScreen = () => {
               />
 
               {password.length > 0 && (
-                <View className="mb-4">
-                  <View className="flex-row items-center">
-                    <View className="flex-1 h-1 bg-gray-200 rounded mr-2">
+                <View style={styles.strengthContainer}>
+                  <View style={styles.strengthRow}>
+                    <View style={styles.strengthBarBackground}>
                       <View
-                        className={`h-full ${getStrengthColor()} rounded`}
-                        style={{
-                          width:
-                            passwordStrength === 'weak'
-                              ? '33%'
-                              : passwordStrength === 'medium'
-                              ? '66%'
-                              : '100%',
-                        }}
+                        style={[
+                          styles.strengthBar,
+                          {
+                            backgroundColor: getStrengthColor(),
+                            width: getStrengthWidth(),
+                          }
+                        ]}
                       />
                     </View>
-                    <Text className="text-sm text-gray-600 capitalize">
+                    <Text style={styles.strengthText}>
                       {passwordStrength}
                     </Text>
                   </View>
@@ -172,10 +183,10 @@ export const SignupScreen = () => {
               fullWidth
             />
 
-            <View className="flex-row justify-center mt-6">
-              <Text className="text-gray-600">Already have an account? </Text>
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Already have an account? </Text>
               <TouchableOpacity onPress={() => router.push('/auth/login')}>
-                <Text className="text-blue-600 font-semibold">Sign In</Text>
+                <Text style={styles.linkText}>Sign In</Text>
               </TouchableOpacity>
             </View>
           </Animated.View>
@@ -184,3 +195,72 @@ export const SignupScreen = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flex: 1,
+    paddingHorizontal: 24,
+    justifyContent: 'center',
+  },
+  animatedContainer: {
+    width: '100%',
+  },
+  header: {
+    marginBottom: 32,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#6B7280',
+  },
+  formContainer: {
+    marginBottom: 24,
+  },
+  strengthContainer: {
+    marginBottom: 16,
+  },
+  strengthRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  strengthBarBackground: {
+    flex: 1,
+    height: 4,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 2,
+    marginRight: 8,
+  },
+  strengthBar: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  strengthText: {
+    fontSize: 14,
+    color: '#6B7280',
+    textTransform: 'capitalize',
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 24,
+  },
+  footerText: {
+    color: '#6B7280',
+  },
+  linkText: {
+    color: '#2563EB',
+    fontWeight: '600',
+  },
+});

@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Animated,
+  StyleSheet,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -62,33 +63,34 @@ export const LoginScreen = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        className="flex-1"
+        style={styles.keyboardView}
       >
         <ScrollView
-          contentContainerClassName="flex-1 px-6 justify-center"
+          contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Animated container */}
           <Animated.View
-            style={{
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            }}
-            className="w-full"
+            style={[
+              styles.animatedContainer,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              }
+            ]}
           >
-            <View className="mb-8">
-              <Text className="text-4xl font-bold text-gray-900 mb-2">
+            <View style={styles.header}>
+              <Text style={styles.title}>
                 Welcome Back
               </Text>
-              <Text className="text-gray-600 text-lg">
+              <Text style={styles.subtitle}>
                 Sign in to continue tracking your life
               </Text>
             </View>
 
-            <View className="mb-6">
+            <View style={styles.formContainer}>
               <Input
                 label="Email"
                 value={email}
@@ -112,14 +114,12 @@ export const LoginScreen = () => {
               onPress={handleLogin}
               loading={loading}
               fullWidth
-              // Optional: add a tiny scale on press (if your Button supports it)
-              // activeScale={0.98}
             />
 
-            <View className="flex-row justify-center mt-6">
-              <Text className="text-gray-600">Don't have an account? </Text>
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Don't have an account? </Text>
               <TouchableOpacity onPress={() => router.push('/auth/signup')}>
-                <Text className="text-blue-600 font-semibold">Sign Up</Text>
+                <Text style={styles.linkText}>Sign Up</Text>
               </TouchableOpacity>
             </View>
           </Animated.View>
@@ -128,3 +128,49 @@ export const LoginScreen = () => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flex: 1,
+    paddingHorizontal: 24,
+    justifyContent: 'center',
+  },
+  animatedContainer: {
+    width: '100%',
+  },
+  header: {
+    marginBottom: 32,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#6B7280',
+  },
+  formContainer: {
+    marginBottom: 24,
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 24,
+  },
+  footerText: {
+    color: '#6B7280',
+  },
+  linkText: {
+    color: '#2563EB',
+    fontWeight: '600',
+  },
+});
