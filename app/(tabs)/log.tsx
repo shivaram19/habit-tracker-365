@@ -18,10 +18,10 @@ import { CATEGORIES } from '@/utils/categories';
 import { formatDisplayDate, formatDate, getTodayDate, isToday, isFutureDate } from '@/utils/formatters';
 import { categoryRequiresSpending } from '@/utils/categories';
 
-const MIN_CATEGORIES_HEIGHT = 48;
+const MIN_CATEGORIES_HEIGHT = 56;
 const MAX_CATEGORIES_HEIGHT = 300;
 const DEFAULT_CATEGORIES_HEIGHT = 140;
-const LABEL_SWITCH_THRESHOLD = 76;
+const LABEL_SWITCH_THRESHOLD = 90;
 
 export default function LogScreen() {
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
@@ -123,6 +123,15 @@ export default function LogScreen() {
 
   const showSpendingInput = categoryRequiresSpending(selectedCategory);
 
+  const calculatePadding = () => {
+    if (categoriesHeight <= LABEL_SWITCH_THRESHOLD) {
+      return Math.max(4, (categoriesHeight - 56) / 4);
+    }
+    return 16;
+  };
+
+  const verticalPadding = calculatePadding();
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -156,7 +165,13 @@ export default function LogScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={[styles.categoriesContainer, { height: categoriesHeight }]}
+          style={[
+            styles.categoriesContainer,
+            {
+              height: categoriesHeight,
+              paddingVertical: verticalPadding,
+            }
+          ]}
           contentContainerStyle={styles.categoriesContent}
         >
           {CATEGORIES.map(category => (
@@ -292,7 +307,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   categoriesContainer: {
-    paddingVertical: 16,
+    overflow: 'hidden',
   },
   categoriesContent: {
     paddingHorizontal: 16,
