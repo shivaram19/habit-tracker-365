@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Dimensions } from 'react-native';
+import { View, Text, Dimensions, StyleSheet } from 'react-native';
 import { MotiView } from 'moti';
 import { MonthlySpending } from '@/types';
 import { format } from 'date-fns';

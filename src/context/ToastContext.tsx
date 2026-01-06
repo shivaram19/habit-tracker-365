@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Text, Animated, StyleSheet } from 'react-native';
 import { CheckCircle, XCircle, Info } from 'lucide-react-native';
 
 type ToastType = 'success' | 'error' | 'info';
