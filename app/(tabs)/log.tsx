@@ -18,9 +18,10 @@ import { CATEGORIES } from '@/utils/categories';
 import { formatDisplayDate, formatDate, getTodayDate, isToday, isFutureDate } from '@/utils/formatters';
 import { categoryRequiresSpending } from '@/utils/categories';
 
-const MIN_CATEGORIES_HEIGHT = 80;
+const MIN_CATEGORIES_HEIGHT = 48;
 const MAX_CATEGORIES_HEIGHT = 300;
 const DEFAULT_CATEGORIES_HEIGHT = 140;
+const LABEL_SWITCH_THRESHOLD = 76;
 
 export default function LogScreen() {
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
@@ -164,6 +165,7 @@ export default function LogScreen() {
               category={category}
               selected={selectedCategory === category.id}
               onPress={() => setSelectedCategory(category.id)}
+              labelPosition={categoriesHeight < LABEL_SWITCH_THRESHOLD ? 'top' : 'bottom'}
             />
           ))}
         </ScrollView>
