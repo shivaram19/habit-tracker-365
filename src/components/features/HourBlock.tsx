@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, View, Text } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { getCategoryById } from '@/utils/categories';
 
 interface HourBlockProps {
@@ -17,27 +17,47 @@ export const HourBlock: React.FC<HourBlockProps> = ({
 }) => {
   const category = getCategoryById(categoryId);
 
-  const getSizeClasses = () => {
+  const getSizeDimensions = () => {
     switch (size) {
       case 'small':
-        return 'w-2 h-6';
+        return { width: 8, height: 24 };
       case 'medium':
-        return 'w-8 h-12';
+        return { width: 32, height: 48 };
       case 'large':
-        return 'w-12 h-12';
+        return { width: 48, height: 48 };
     }
   };
+
+  const dimensions = getSizeDimensions();
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <View
-        className={`${getSizeClasses()} rounded-lg border-2 border-gray-200 justify-center items-center`}
-        style={{ backgroundColor: category.color }}
+        style={[
+          styles.block,
+          dimensions,
+          { backgroundColor: category.color }
+        ]}
       >
         {size === 'large' && (
-          <Text className="text-xs font-semibold text-white">{hour}</Text>
+          <Text style={styles.hourText}>{hour}</Text>
         )}
       </View>
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  block: {
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  hourText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+});

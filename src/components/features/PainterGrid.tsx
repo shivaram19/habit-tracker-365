@@ -95,11 +95,11 @@ export const PainterGrid: React.FC<PainterGridProps> = ({
   };
 
   return (
-    <GestureHandlerRootView>
-      <View className="flex-1">
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <GestureDetector gesture={pan}>
-          <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-            <View className="flex-row flex-wrap gap-2 p-4">
+          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, padding: 16 }}>
               {Array.from({ length: 24 }, (_, i) => (
                 <HourBlock
                   key={i}
