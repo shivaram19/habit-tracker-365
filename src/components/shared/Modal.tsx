@@ -25,10 +25,9 @@ export const Modal: React.FC<ModalProps> = ({ visible, onClose, children }) => {
       animationType="none"
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-end">
+      <View style={styles.container}>
         <TouchableOpacity
-          style={StyleSheet.absoluteFill}
-          className="bg-black/50"
+          style={[StyleSheet.absoluteFill, styles.overlay]}
           activeOpacity={1}
           onPress={onClose}
         >
@@ -39,8 +38,7 @@ export const Modal: React.FC<ModalProps> = ({ visible, onClose, children }) => {
           from={{ translateY: height }}
           animate={{ translateY: visible ? 0 : height }}
           transition={{ type: 'timing', duration: 300 }}
-          className="bg-white rounded-t-3xl"
-          style={{ maxHeight: height * 0.9 }}
+          style={[styles.content, { maxHeight: height * 0.9 }]}
         >
           {children}
         </MotiView>
@@ -48,3 +46,18 @@ export const Modal: React.FC<ModalProps> = ({ visible, onClose, children }) => {
     </RNModal>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  content: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+  },
+});

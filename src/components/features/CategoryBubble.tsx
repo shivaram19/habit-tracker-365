@@ -52,25 +52,59 @@ export const CategoryBubble: React.FC<CategoryBubbleProps> = ({
   return (
     <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
       <Animated.View
-        className="items-center mx-2"
-        style={{ transform: [{ scale: scaleAnim }] }}
+        style={[styles.container, { transform: [{ scale: scaleAnim }] }]}
       >
         <View
-          className={`w-16 h-16 rounded-full justify-center items-center mb-2 ${
-            selected ? 'border-4 border-white shadow-lg' : 'border-2 border-gray-200'
-          }`}
-          style={{ backgroundColor: category.color }}
+          style={[
+            styles.bubble,
+            { backgroundColor: category.color },
+            selected ? styles.selectedBubble : styles.unselectedBubble
+          ]}
         >
           {getIconComponent()}
         </View>
-        <Text
-          className={`text-xs font-semibold ${
-            selected ? 'text-gray-900' : 'text-gray-600'
-          }`}
-        >
+        <Text style={[styles.label, selected ? styles.selectedLabel : styles.unselectedLabel]}>
           {category.name}
         </Text>
       </Animated.View>
     </TouchableOpacity>
   );
+};
+
+const styles = {
+  container: {
+    alignItems: 'center' as const,
+    marginHorizontal: 8,
+  },
+  bubble: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
+    marginBottom: 8,
+  },
+  selectedBubble: {
+    borderWidth: 4,
+    borderColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  unselectedBubble: {
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+  },
+  label: {
+    fontSize: 12,
+    fontWeight: '600' as const,
+  },
+  selectedLabel: {
+    color: '#111827',
+  },
+  unselectedLabel: {
+    color: '#6B7280',
+  },
 };

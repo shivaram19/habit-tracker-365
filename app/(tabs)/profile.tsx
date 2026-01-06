@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
@@ -67,8 +67,8 @@ export default function ProfileScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 bg-white">
-        <View className="flex-1 justify-center items-center">
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3B82F6" />
         </View>
       </SafeAreaView>
@@ -76,19 +76,19 @@ export default function ProfileScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="flex-1 px-6 py-8">
-        <Text className="text-3xl font-bold text-gray-900 mb-2">Profile</Text>
-        <Text className="text-gray-600 text-lg mb-8">Manage your account</Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
+        <Text style={styles.title}>Profile</Text>
+        <Text style={styles.subtitle}>Manage your account</Text>
 
-        <View className="bg-gray-50 rounded-xl p-6 mb-4">
-          <View className="flex-row items-center mb-4">
-            <View className="w-16 h-16 rounded-full bg-blue-600 items-center justify-center mr-4">
+        <View style={styles.card}>
+          <View style={styles.profileHeader}>
+            <View style={styles.avatar}>
               <User size={32} color="#FFFFFF" />
             </View>
-            <View className="flex-1">
-              <Text className="text-sm text-gray-600 mb-1">Email</Text>
-              <Text className="text-base font-semibold text-gray-900">{user?.email}</Text>
+            <View style={styles.emailContainer}>
+              <Text style={styles.emailLabel}>Email</Text>
+              <Text style={styles.emailText}>{user?.email}</Text>
             </View>
           </View>
 
@@ -100,8 +100,8 @@ export default function ProfileScreen() {
                 onChangeText={setName}
                 placeholder="Your name"
               />
-              <View className="flex-row gap-2 mt-4">
-                <View className="flex-1">
+              <View style={styles.buttonRow}>
+                <View style={styles.buttonHalf}>
                   <Button
                     title="Cancel"
                     onPress={handleCancelEdit}
@@ -109,7 +109,7 @@ export default function ProfileScreen() {
                     fullWidth
                   />
                 </View>
-                <View className="flex-1">
+                <View style={styles.buttonHalf}>
                   <Button
                     title="Save"
                     onPress={handleSaveName}
@@ -121,8 +121,8 @@ export default function ProfileScreen() {
             </View>
           ) : (
             <View>
-              <Text className="text-sm text-gray-600 mb-1">Display Name</Text>
-              <Text className="text-lg font-semibold text-gray-900 mb-4">
+              <Text style={styles.nameLabel}>Display Name</Text>
+              <Text style={styles.nameText}>
                 {profile?.name || 'Not set'}
               </Text>
               <Button title="Edit Name" onPress={handleStartEdit} variant="secondary" fullWidth />
@@ -130,7 +130,7 @@ export default function ProfileScreen() {
           )}
         </View>
 
-        <View className="mb-4">
+        <View style={styles.exportButton}>
           <Button
             title="Export My Data"
             onPress={handleExportData}
@@ -145,3 +145,88 @@ export default function ProfileScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  content: {
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#6B7280',
+    marginBottom: 32,
+  },
+  card: {
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    padding: 24,
+    marginBottom: 16,
+  },
+  profileHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#2563EB',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  emailContainer: {
+    flex: 1,
+  },
+  emailLabel: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 4,
+  },
+  emailText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  nameLabel: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 4,
+  },
+  nameText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 16,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 16,
+  },
+  buttonHalf: {
+    flex: 1,
+  },
+  exportButton: {
+    marginBottom: 16,
+  },
+});

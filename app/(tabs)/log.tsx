@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronLeft, ChevronRight, List } from 'lucide-react-native';
 import { addDays, subDays } from 'date-fns';
@@ -88,31 +88,31 @@ export default function LogScreen() {
   const showSpendingInput = categoryRequiresSpending(selectedCategory);
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1">
-        <View className="px-6 pt-4 pb-2">
-          <Text className="text-3xl font-bold text-gray-900">Time Painter</Text>
-          <Text className="text-gray-600 mt-1">Paint your day by the hour</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Time Painter</Text>
+          <Text style={styles.subtitle}>Paint your day by the hour</Text>
         </View>
 
-        <View className="flex-row items-center justify-between px-6 py-3 border-b border-gray-200">
-          <TouchableOpacity onPress={handlePreviousDay} className="p-2">
+        <View style={styles.dateNav}>
+          <TouchableOpacity onPress={handlePreviousDay} style={styles.navButton}>
             <ChevronLeft size={24} color="#374151" />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handleToday}>
-            <Text className="text-lg font-semibold text-gray-900">
+            <Text style={styles.dateText}>
               {formatDisplayDate(selectedDate)}
             </Text>
             {isFutureDate(selectedDate) && (
-              <Text className="text-xs text-blue-600 text-center">Future</Text>
+              <Text style={styles.futureLabel}>Future</Text>
             )}
             {isToday(selectedDate) && (
-              <Text className="text-xs text-green-600 text-center">Today</Text>
+              <Text style={styles.todayLabel}>Today</Text>
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleNextDay} className="p-2">
+          <TouchableOpacity onPress={handleNextDay} style={styles.navButton}>
             <ChevronRight size={24} color="#374151" />
           </TouchableOpacity>
         </View>
@@ -120,8 +120,8 @@ export default function LogScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          className="py-4 border-b border-gray-200"
-          contentContainerStyle={{ paddingHorizontal: 16 }}
+          style={styles.categoriesContainer}
+          contentContainerStyle={styles.categoriesContent}
         >
           {CATEGORIES.map(category => (
             <CategoryBubble
@@ -134,11 +134,11 @@ export default function LogScreen() {
         </ScrollView>
 
         {isLoading ? (
-          <View className="flex-1 justify-center items-center">
+          <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#4C6EF5" />
           </View>
         ) : (
-          <View className="flex-1">
+          <View style={styles.gridContainer}>
             <PainterGrid
               hourlyLogs={hourlyLogs}
               selectedCategory={selectedCategory}
@@ -148,11 +148,11 @@ export default function LogScreen() {
           </View>
         )}
 
-        <View className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <View style={styles.footer}>
           {showSpendingInput && (
-            <View className="mb-4">
-              <View className="flex-row items-end gap-2">
-                <View className="flex-1">
+            <View style={styles.spendingContainer}>
+              <View style={styles.spendingRow}>
+                <View style={styles.spendingInput}>
                   <Input
                     label="Total Spending"
                     value={totalSpend}
@@ -164,7 +164,7 @@ export default function LogScreen() {
                 {dayData?.id && user && (
                   <TouchableOpacity
                     onPress={() => setShowItemsManager(true)}
-                    className="bg-blue-600 p-4 rounded-xl mb-1"
+                    style={styles.listButton}
                   >
                     <List size={20} color="#FFFFFF" />
                   </TouchableOpacity>
@@ -202,3 +202,94 @@ export default function LogScreen() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  content: {
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: '700',
+    color: '#111827',
+  },
+  subtitle: {
+    color: '#6B7280',
+    marginTop: 4,
+  },
+  dateNav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  navButton: {
+    padding: 8,
+  },
+  dateText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  futureLabel: {
+    fontSize: 12,
+    color: '#2563EB',
+    textAlign: 'center',
+  },
+  todayLabel: {
+    fontSize: 12,
+    color: '#10B981',
+    textAlign: 'center',
+  },
+  categoriesContainer: {
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  categoriesContent: {
+    paddingHorizontal: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  gridContainer: {
+    flex: 1,
+  },
+  footer: {
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+    backgroundColor: '#F9FAFB',
+  },
+  spendingContainer: {
+    marginBottom: 16,
+  },
+  spendingRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: 8,
+  },
+  spendingInput: {
+    flex: 1,
+  },
+  listButton: {
+    backgroundColor: '#2563EB',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 1,
+  },
+});

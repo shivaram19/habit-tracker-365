@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { LucideIcon } from 'lucide-react-native';
 
 interface EmptyStateProps {
@@ -18,18 +18,43 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   const displayMessage = message || description;
 
   return (
-    <View className="flex-1 justify-center items-center p-8">
+    <View style={styles.container}>
       {Icon && (
-        <View className="mb-4">
+        <View style={styles.iconContainer}>
           <Icon size={48} color="#9CA3AF" />
         </View>
       )}
-      <Text className="text-xl font-bold text-gray-900 mb-2 text-center">{title}</Text>
+      <Text style={styles.title}>{title}</Text>
       {displayMessage && (
-        <Text className="text-base text-gray-600 text-center leading-6">
+        <Text style={styles.description}>
           {displayMessage}
         </Text>
       )}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  iconContainer: {
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+});

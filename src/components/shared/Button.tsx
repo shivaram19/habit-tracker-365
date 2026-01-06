@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, View } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 
 interface ButtonProps {
@@ -27,26 +27,26 @@ export const Button: React.FC<ButtonProps> = ({
   const getVariantStyles = () => {
     switch (variant) {
       case 'primary':
-        return 'bg-blue-600';
+        return styles.primaryButton;
       case 'secondary':
-        return 'bg-gray-200';
+        return styles.secondaryButton;
       case 'danger':
-        return 'bg-red-600';
+        return styles.dangerButton;
       default:
-        return 'bg-blue-600';
+        return styles.primaryButton;
     }
   };
 
-  const getTextColor = () => {
+  const getTextStyles = () => {
     switch (variant) {
       case 'primary':
-        return 'text-white';
+        return styles.primaryText;
       case 'secondary':
-        return 'text-gray-800';
+        return styles.secondaryText;
       case 'danger':
-        return 'text-white';
+        return styles.dangerText;
       default:
-        return 'text-white';
+        return styles.primaryText;
     }
   };
 
@@ -56,16 +56,58 @@ export const Button: React.FC<ButtonProps> = ({
     <TouchableOpacity
       onPress={handlePress}
       disabled={isDisabled}
-      className={`${getVariantStyles()} ${fullWidth ? 'w-full' : ''} ${
-        isDisabled ? 'opacity-50' : ''
-      } py-4 px-6 rounded-xl flex-row justify-center items-center`}
+      style={[
+        styles.button,
+        getVariantStyles(),
+        fullWidth && styles.fullWidth,
+        isDisabled && styles.disabled,
+      ]}
       activeOpacity={0.8}
     >
       {loading ? (
         <ActivityIndicator color={variant === 'secondary' ? '#374151' : '#ffffff'} />
       ) : (
-        <Text className={`${getTextColor()} font-semibold text-base`}>{title}</Text>
+        <Text style={[styles.text, getTextStyles()]}>{title}</Text>
       )}
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullWidth: {
+    width: '100%',
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+  primaryButton: {
+    backgroundColor: '#2563EB',
+  },
+  secondaryButton: {
+    backgroundColor: '#E5E7EB',
+  },
+  dangerButton: {
+    backgroundColor: '#DC2626',
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  primaryText: {
+    color: '#FFFFFF',
+  },
+  secondaryText: {
+    color: '#1F2937',
+  },
+  dangerText: {
+    color: '#FFFFFF',
+  },
+});

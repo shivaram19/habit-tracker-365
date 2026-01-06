@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
 
 interface InputProps {
@@ -28,9 +28,9 @@ export const Input: React.FC<InputProps> = ({
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <View className="mb-4">
-      {label && <Text className="text-gray-700 font-medium mb-2">{label}</Text>}
-      <View className="relative">
+    <View style={styles.container}>
+      {label && <Text style={styles.label}>{label}</Text>}
+      <View style={styles.inputWrapper}>
         <TextInput
           value={value}
           onChangeText={onChangeText}
@@ -39,15 +39,17 @@ export const Input: React.FC<InputProps> = ({
           autoCapitalize={autoCapitalize}
           keyboardType={keyboardType}
           editable={editable}
-          className={`bg-gray-50 border ${
-            error ? 'border-red-500' : 'border-gray-200'
-          } rounded-xl px-4 py-3 text-base ${!editable ? 'opacity-50' : ''}`}
+          style={[
+            styles.input,
+            error ? styles.inputError : styles.inputNormal,
+            !editable && styles.inputDisabled,
+          ]}
           placeholderTextColor="#9CA3AF"
         />
         {secureTextEntry && (
           <TouchableOpacity
             onPress={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-3"
+            style={styles.eyeIcon}
           >
             {showPassword ? (
               <EyeOff size={20} color="#6B7280" />
@@ -57,7 +59,48 @@ export const Input: React.FC<InputProps> = ({
           </TouchableOpacity>
         )}
       </View>
-      {error && <Text className="text-red-500 text-sm mt-1">{error}</Text>}
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 16,
+  },
+  label: {
+    color: '#374151',
+    fontWeight: '500',
+    marginBottom: 8,
+  },
+  inputWrapper: {
+    position: 'relative',
+  },
+  input: {
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+  },
+  inputNormal: {
+    borderColor: '#E5E7EB',
+  },
+  inputError: {
+    borderColor: '#EF4444',
+  },
+  inputDisabled: {
+    opacity: 0.5,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 16,
+    top: 12,
+  },
+  errorText: {
+    color: '#EF4444',
+    fontSize: 14,
+    marginTop: 4,
+  },
+});
