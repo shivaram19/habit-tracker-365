@@ -1,70 +1,84 @@
-import pool from '../config/database';
+import { supabase } from '../config/supabase';
 
 export interface Profile {
   id: string;
-  user_id: string;
-  display_name?: string;
-  avatar_url?: string;
-  theme: string;
+  email: string | null;
+  name: string | null;
+  timezone: string | null;
   divider_position: number;
-  created_at: Date;
-  updated_at: Date;
+  theme_preference: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export const profileService = {
   async getProfile(userId: string): Promise<Profile | null> {
-    const result = await pool.query(
-      'SELECT * FROM profiles WHERE user_id = $1',
-      [userId]
-    );
-    return result.rows[0] || null;
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data;
   },
 
-  async createProfile(userId: string): Promise<Profile> {
-    const result = await pool.query(
-      'INSERT INTO profiles (user_id, theme, divider_position) VALUES ($1, $2, $3) RETURNING *',
-      [userId, 'system', 50]
-    );
-    return result.rows[0];
+  async createProfile(userId: string, email: string): Promise<Profile> {
+    const { data, error } = await supabase
+      .from('profiles')
+      .insert({
+        id: userId,
+        email: email,
+        theme_preference: 'system',
+        divider_position: 50,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data;
   },
 
   async updateProfile(userId: string, updates: Partial<Profile>): Promise<Profile> {
-    const fields: string[] = [];
-    const values: any[] = [];
-    let paramIndex = 1;
+    const updateData: any = {};
 
-    if (updates.display_name !== undefined) {
-      fields.push(`display_name = $${paramIndex++}`);
-      values.push(updates.display_name);
+    if (updates.name !== undefined) {
+      updateData.name = updates.name;
     }
 
-    if (updates.avatar_url !== undefined) {
-      fields.push(`avatar_url = $${paramIndex++}`);
-      values.push(updates.avatar_url);
+    if (updates.timezone !== undefined) {
+      updateData.timezone = updates.timezone;
     }
 
-    if (updates.theme) {
-      fields.push(`theme = $${paramIndex++}`);
-      values.push(updates.theme);
+    if (updates.theme_preference !== undefined) {
+      updateData.theme_preference = updates.theme_preference;
     }
 
     if (updates.divider_position !== undefined) {
-      fields.push(`divider_position = $${paramIndex++}`);
-      values.push(updates.divider_position);
+      updateData.divider_position = updates.divider_position;
     }
 
-    fields.push(`updated_at = NOW()`);
-    values.push(userId);
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(updateData)
+      .eq('id', userId)
+      .select()
+      .single();
 
-    const result = await pool.query(
-      `UPDATE profiles SET ${fields.join(', ')} WHERE user_id = $${paramIndex} RETURNING *`,
-      values
-    );
+    if (error) {
+      throw new Error(error.message);
+    }
 
-    if (result.rows.length === 0) {
+    if (!data) {
       throw new Error('Profile not found');
     }
 
-    return result.rows[0];
+    return data;
   },
 };

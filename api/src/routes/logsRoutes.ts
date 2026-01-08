@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Response } from 'express';
 import { body, query, validationResult } from 'express-validator';
 import { logsService } from '../services/logsService';
 import { authenticate, AuthRequest } from '../middleware/auth';
@@ -8,14 +8,12 @@ const router = Router();
 router.use(authenticate);
 
 router.post(
-  '/',
+  '/days',
   [
-    body('item_id').notEmpty(),
-    body('category').notEmpty(),
-    body('logged_at').isISO8601(),
-    body('notes').optional(),
+    body('date').isISO8601(),
+    body('hourly_logs').isArray(),
   ],
-  async (req: AuthRequest, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -23,29 +21,23 @@ router.post(
         return;
       }
 
-      const { item_id, category, logged_at, notes } = req.body;
-      const log = await logsService.createLog(
-        req.userId!,
-        item_id,
-        category,
-        new Date(logged_at),
-        notes
-      );
+      const { date, hourly_logs } = req.body;
+      const day = await logsService.createDay(req.userId!, date, hourly_logs);
 
-      res.status(201).json(log);
+      res.status(201).json(day);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to create log' });
+      res.status(500).json({ error: 'Failed to create day' });
     }
   }
 );
 
 router.get(
-  '/',
+  '/days',
   [
     query('start_date').optional().isISO8601(),
     query('end_date').optional().isISO8601(),
   ],
-  async (req: AuthRequest, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -53,25 +45,40 @@ router.get(
         return;
       }
 
-      const startDate = req.query.start_date ? new Date(req.query.start_date as string) : undefined;
-      const endDate = req.query.end_date ? new Date(req.query.end_date as string) : undefined;
+      const startDate = req.query.start_date as string | undefined;
+      const endDate = req.query.end_date as string | undefined;
 
-      const logs = await logsService.getLogs(req.userId!, startDate, endDate);
-      res.json(logs);
+      const days = await logsService.getDays(req.userId!, startDate, endDate);
+      res.json(days);
     } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch logs' });
+      res.status(500).json({ error: 'Failed to fetch days' });
+    }
+  }
+);
+
+router.get(
+  '/days/:date',
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const day = await logsService.getDay(req.userId!, req.params.date);
+      if (!day) {
+        res.status(404).json({ error: 'Day not found' });
+        return;
+      }
+      res.json(day);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch day' });
     }
   }
 );
 
 router.put(
-  '/:id',
+  '/days/:id',
   [
-    body('category').optional(),
-    body('logged_at').optional().isISO8601(),
-    body('notes').optional(),
+    body('hourly_logs').optional().isArray(),
+    body('highlight').optional(),
   ],
-  async (req: AuthRequest, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -80,24 +87,104 @@ router.put(
       }
 
       const updates: any = {};
-      if (req.body.category) updates.category = req.body.category;
-      if (req.body.logged_at) updates.logged_at = new Date(req.body.logged_at);
-      if (req.body.notes !== undefined) updates.notes = req.body.notes;
+      if (req.body.hourly_logs) updates.hourly_logs = req.body.hourly_logs;
+      if (req.body.highlight !== undefined) updates.highlight = req.body.highlight;
 
-      const log = await logsService.updateLog(req.params.id, req.userId!, updates);
-      res.json(log);
+      const day = await logsService.updateDay(req.params.id, req.userId!, updates);
+      res.json(day);
     } catch (error) {
-      res.status(404).json({ error: 'Log not found' });
+      res.status(404).json({ error: 'Day not found' });
     }
   }
 );
 
-router.delete('/:id', async (req: AuthRequest, res) => {
+router.delete('/days/:id', async (req: AuthRequest, res: Response) => {
   try {
-    await logsService.deleteLog(req.params.id, req.userId!);
+    await logsService.deleteDay(req.params.id, req.userId!);
     res.status(204).send();
   } catch (error) {
-    res.status(404).json({ error: 'Log not found' });
+    res.status(404).json({ error: 'Day not found' });
+  }
+});
+
+router.post(
+  '/items',
+  [
+    body('day_id').notEmpty(),
+    body('category').isInt(),
+    body('name').notEmpty(),
+    body('price').isFloat({ min: 0 }),
+    body('date').isISO8601(),
+  ],
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+        return;
+      }
+
+      const { day_id, category, name, price, date } = req.body;
+      const item = await logsService.createListItem(day_id, req.userId!, {
+        category,
+        name,
+        price,
+        date,
+      });
+
+      res.status(201).json(item);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to create list item' });
+    }
+  }
+);
+
+router.get(
+  '/items/:day_id',
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const items = await logsService.getListItems(req.params.day_id, req.userId!);
+      res.json(items);
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to fetch list items' });
+    }
+  }
+);
+
+router.put(
+  '/items/:id',
+  [
+    body('category').optional().isInt(),
+    body('name').optional(),
+    body('price').optional().isFloat({ min: 0 }),
+  ],
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+        return;
+      }
+
+      const updates: any = {};
+      if (req.body.category !== undefined) updates.category = req.body.category;
+      if (req.body.name) updates.name = req.body.name;
+      if (req.body.price !== undefined) updates.price = req.body.price;
+
+      const item = await logsService.updateListItem(req.params.id, req.userId!, updates);
+      res.json(item);
+    } catch (error) {
+      res.status(404).json({ error: 'List item not found' });
+    }
+  }
+);
+
+router.delete('/items/:id', async (req: AuthRequest, res: Response) => {
+  try {
+    await logsService.deleteListItem(req.params.id, req.userId!);
+    res.status(204).send();
+  } catch (error) {
+    res.status(404).json({ error: 'List item not found' });
   }
 });
 

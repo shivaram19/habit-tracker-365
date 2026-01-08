@@ -1,68 +1,98 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import pool from '../config/database';
-import { jwtConfig } from '../config/jwt';
+import { supabase } from '../config/supabase';
 
 export interface User {
   id: string;
   email: string;
-  created_at: Date;
+  created_at: string;
 }
 
 export const authService = {
   async signup(email: string, password: string): Promise<{ user: User; token: string }> {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const result = await pool.query(
-      'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email, created_at',
-      [email, hashedPassword]
-    );
-
-    const user = result.rows[0];
-    const token = jwt.sign({ userId: user.id }, jwtConfig.secret, {
-      expiresIn: jwtConfig.expiresIn,
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
     });
 
-    return { user, token };
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    if (!data.user || !data.session) {
+      throw new Error('Signup failed');
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .insert({
+        id: data.user.id,
+        email: data.user.email,
+      })
+      .select()
+      .single();
+
+    if (profileError && profileError.code !== '23505') {
+      console.error('Profile creation error:', profileError);
+    }
+
+    return {
+      user: {
+        id: data.user.id,
+        email: data.user.email!,
+        created_at: data.user.created_at,
+      },
+      token: data.session.access_token,
+    };
   },
 
   async login(email: string, password: string): Promise<{ user: User; token: string }> {
-    const result = await pool.query(
-      'SELECT id, email, password_hash, created_at FROM users WHERE email = $1',
-      [email]
-    );
-
-    if (result.rows.length === 0) {
-      throw new Error('Invalid credentials');
-    }
-
-    const user = result.rows[0];
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
-
-    if (!isValidPassword) {
-      throw new Error('Invalid credentials');
-    }
-
-    const token = jwt.sign({ userId: user.id }, jwtConfig.secret, {
-      expiresIn: jwtConfig.expiresIn,
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
 
+    if (error) {
+      throw new Error('Invalid credentials');
+    }
+
+    if (!data.user || !data.session) {
+      throw new Error('Login failed');
+    }
+
     return {
-      user: { id: user.id, email: user.email, created_at: user.created_at },
-      token,
+      user: {
+        id: data.user.id,
+        email: data.user.email!,
+        created_at: data.user.created_at,
+      },
+      token: data.session.access_token,
     };
   },
 
   async getUser(userId: string): Promise<User> {
-    const result = await pool.query(
-      'SELECT id, email, created_at FROM users WHERE id = $1',
-      [userId]
-    );
+    const { data, error } = await supabase.auth.admin.getUserById(userId);
 
-    if (result.rows.length === 0) {
+    if (error || !data.user) {
       throw new Error('User not found');
     }
 
-    return result.rows[0];
+    return {
+      id: data.user.id,
+      email: data.user.email!,
+      created_at: data.user.created_at,
+    };
+  },
+
+  async verifyToken(token: string): Promise<User> {
+    const { data, error } = await supabase.auth.getUser(token);
+
+    if (error || !data.user) {
+      throw new Error('Invalid token');
+    }
+
+    return {
+      id: data.user.id,
+      email: data.user.email!,
+      created_at: data.user.created_at,
+    };
   },
 };

@@ -1,68 +1,98 @@
-import pool from '../config/database';
+import { supabase } from '../config/supabase';
 
 export interface Stats {
-  total_logs: number;
-  categories_breakdown: Record<string, number>;
-  logs_by_month: Array<{ month: string; count: number }>;
-  top_items: Array<{ item_id: string; category: string; count: number }>;
+  total_days: number;
+  total_items: number;
+  total_spend: number;
+  categories_breakdown: Record<number, { count: number; total: number }>;
+  spending_by_month: Array<{ month: string; total: number; count: number }>;
+  top_items: Array<{ name: string; category: number; count: number; total: number }>;
 }
 
 export const statsService = {
   async getStats(userId: string, year?: number): Promise<Stats> {
-    let yearFilter = '';
-    const params: any[] = [userId];
+    let startDate: string | undefined;
+    let endDate: string | undefined;
 
     if (year) {
-      params.push(year);
-      yearFilter = `AND EXTRACT(YEAR FROM logged_at) = $${params.length}`;
+      startDate = `${year}-01-01`;
+      endDate = `${year}-12-31`;
     }
 
-    const totalLogsResult = await pool.query(
-      `SELECT COUNT(*) as count FROM logs WHERE user_id = $1 ${yearFilter}`,
-      params
-    );
+    let daysQuery = supabase
+      .from('days')
+      .select('id, date, total_spend')
+      .eq('user_id', userId);
 
-    const categoriesResult = await pool.query(
-      `SELECT category, COUNT(*) as count FROM logs WHERE user_id = $1 ${yearFilter} GROUP BY category`,
-      params
-    );
+    if (startDate && endDate) {
+      daysQuery = daysQuery.gte('date', startDate).lte('date', endDate);
+    }
 
-    const monthsResult = await pool.query(
-      `SELECT TO_CHAR(logged_at, 'YYYY-MM') as month, COUNT(*) as count
-       FROM logs
-       WHERE user_id = $1 ${yearFilter}
-       GROUP BY month
-       ORDER BY month`,
-      params
-    );
+    const { data: days, error: daysError } = await daysQuery;
 
-    const topItemsResult = await pool.query(
-      `SELECT item_id, category, COUNT(*) as count
-       FROM logs
-       WHERE user_id = $1 ${yearFilter}
-       GROUP BY item_id, category
-       ORDER BY count DESC
-       LIMIT 10`,
-      params
-    );
+    if (daysError) {
+      throw new Error(daysError.message);
+    }
 
-    const categoriesBreakdown: Record<string, number> = {};
-    categoriesResult.rows.forEach(row => {
-      categoriesBreakdown[row.category] = parseInt(row.count);
+    let itemsQuery = supabase
+      .from('list_items')
+      .select('name, category, price, date')
+      .eq('user_id', userId);
+
+    if (startDate && endDate) {
+      itemsQuery = itemsQuery.gte('date', startDate).lte('date', endDate);
+    }
+
+    const { data: items, error: itemsError } = await itemsQuery;
+
+    if (itemsError) {
+      throw new Error(itemsError.message);
+    }
+
+    const totalSpend = days.reduce((sum, day) => sum + Number(day.total_spend), 0);
+
+    const categoriesBreakdown: Record<number, { count: number; total: number }> = {};
+    items.forEach(item => {
+      if (!categoriesBreakdown[item.category]) {
+        categoriesBreakdown[item.category] = { count: 0, total: 0 };
+      }
+      categoriesBreakdown[item.category].count++;
+      categoriesBreakdown[item.category].total += Number(item.price);
     });
 
+    const spendingByMonth: Record<string, { total: number; count: number }> = {};
+    items.forEach(item => {
+      const month = item.date.substring(0, 7);
+      if (!spendingByMonth[month]) {
+        spendingByMonth[month] = { total: 0, count: 0 };
+      }
+      spendingByMonth[month].total += Number(item.price);
+      spendingByMonth[month].count++;
+    });
+
+    const itemCounts: Record<string, { name: string; category: number; count: number; total: number }> = {};
+    items.forEach(item => {
+      const key = `${item.name}-${item.category}`;
+      if (!itemCounts[key]) {
+        itemCounts[key] = { name: item.name, category: item.category, count: 0, total: 0 };
+      }
+      itemCounts[key].count++;
+      itemCounts[key].total += Number(item.price);
+    });
+
+    const topItems = Object.values(itemCounts)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
     return {
-      total_logs: parseInt(totalLogsResult.rows[0].count),
+      total_days: days.length,
+      total_items: items.length,
+      total_spend: totalSpend,
       categories_breakdown: categoriesBreakdown,
-      logs_by_month: monthsResult.rows.map(row => ({
-        month: row.month,
-        count: parseInt(row.count),
-      })),
-      top_items: topItemsResult.rows.map(row => ({
-        item_id: row.item_id,
-        category: row.category,
-        count: parseInt(row.count),
-      })),
+      spending_by_month: Object.entries(spendingByMonth)
+        .map(([month, data]) => ({ month, ...data }))
+        .sort((a, b) => a.month.localeCompare(b.month)),
+      top_items: topItems,
     };
   },
 };

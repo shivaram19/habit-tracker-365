@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Response } from 'express';
 import { query, validationResult } from 'express-validator';
 import { statsService } from '../services/statsService';
 import { authenticate, AuthRequest } from '../middleware/auth';
@@ -10,7 +10,7 @@ router.use(authenticate);
 router.get(
   '/',
   [query('year').optional().isInt({ min: 2000, max: 2100 })],
-  async (req: AuthRequest, res) => {
+  async (req: AuthRequest, res: Response) => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
