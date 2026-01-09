@@ -5,16 +5,22 @@ import { ChevronLeft, ChevronRight, List } from 'lucide-react-native';
 import { addDays, subDays } from 'date-fns';
 import { PainterGrid } from '@/components/features/PainterGrid';
 import { CategoryBubble } from '@/components/features/CategoryBubble';
+import { DraggableHandle } from '@/components/shared/DraggableHandle';
 import { Input } from '@/components/shared/Input';
 import { Button } from '@/components/shared/Button';
 import { Modal } from '@/components/shared/Modal';
 import { ListItemsManager } from '@/components/features/ListItemsManager';
 import { useDayLog, useUpsertDay } from '@/hooks/useLogs';
+import { useProfile } from '@/hooks/useProfile';
 import { useToast } from '@/context/ToastContext';
 import { useAuth } from '@/context/AuthContext';
 import { CATEGORIES } from '@/utils/categories';
 import { formatDisplayDate, formatDate, getTodayDate, isToday, isFutureDate } from '@/utils/formatters';
 import { categoryRequiresSpending } from '@/utils/categories';
+
+const MIN_CATEGORIES_HEIGHT = 80;
+const MAX_CATEGORIES_HEIGHT = 300;
+const DEFAULT_CATEGORIES_HEIGHT = 140;
 
 export default function LogScreen() {
   const [selectedDate, setSelectedDate] = useState(getTodayDate());
@@ -23,8 +29,11 @@ export default function LogScreen() {
   const [totalSpend, setTotalSpend] = useState('0');
   const [highlight, setHighlight] = useState('');
   const [showItemsManager, setShowItemsManager] = useState(false);
+  const [categoriesHeight, setCategoriesHeight] = useState(DEFAULT_CATEGORIES_HEIGHT);
+  const [initialHeight, setInitialHeight] = useState(DEFAULT_CATEGORIES_HEIGHT);
 
   const { user } = useAuth();
+  const { profile, updateDividerPosition } = useProfile();
   const { data: dayData, isLoading } = useDayLog(selectedDate);
   const upsertMutation = useUpsertDay();
   const { showToast } = useToast();
@@ -40,6 +49,32 @@ export default function LogScreen() {
       setHighlight('');
     }
   }, [dayData]);
+
+  useEffect(() => {
+    if (profile?.divider_position) {
+      setCategoriesHeight(profile.divider_position);
+      setInitialHeight(profile.divider_position);
+    }
+  }, [profile]);
+
+  const handleDrag = (deltaY: number) => {
+    const newHeight = Math.max(
+      MIN_CATEGORIES_HEIGHT,
+      Math.min(MAX_CATEGORIES_HEIGHT, initialHeight + deltaY)
+    );
+    setCategoriesHeight(newHeight);
+  };
+
+  const handleDragEnd = async () => {
+    setInitialHeight(categoriesHeight);
+    if (updateDividerPosition) {
+      try {
+        await updateDividerPosition({ position: Math.round(categoriesHeight) });
+      } catch (error) {
+        console.error('Failed to save divider position:', error);
+      }
+    }
+  };
 
   const handleHourChange = (hour: number, categoryId: number) => {
     const newLogs = [...hourlyLogs];
@@ -120,7 +155,7 @@ export default function LogScreen() {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={styles.categoriesContainer}
+          style={[styles.categoriesContainer, { height: categoriesHeight }]}
           contentContainerStyle={styles.categoriesContent}
         >
           {CATEGORIES.map(category => (
@@ -132,6 +167,8 @@ export default function LogScreen() {
             />
           ))}
         </ScrollView>
+
+        <DraggableHandle onDrag={handleDrag} onDragEnd={handleDragEnd} />
 
         {isLoading ? (
           <View style={styles.loadingContainer}>
@@ -254,8 +291,6 @@ const styles = StyleSheet.create({
   },
   categoriesContainer: {
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
   },
   categoriesContent: {
     paddingHorizontal: 16,
