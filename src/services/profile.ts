@@ -3,7 +3,6 @@ import { supabase } from './supabase';
 export interface Profile {
   id: string;
   name: string;
-  divider_position: number;
   created_at: string;
   updated_at: string;
 }
@@ -34,7 +33,7 @@ export const profileService = {
     return data;
   },
 
-  async updateProfile(userId: string, updates: { name?: string; divider_position?: number }) {
+  async updateProfile(userId: string, updates: { name?: string }) {
     const { data, error } = await supabase
       .from('profiles')
       .update(updates)
@@ -44,15 +43,6 @@ export const profileService = {
 
     if (error) throw error;
     return data;
-  },
-
-  async updateDividerPosition(userId: string, position: number) {
-    const { error } = await supabase
-      .from('profiles')
-      .update({ divider_position: position })
-      .eq('id', userId);
-
-    if (error) throw error;
   },
 
   async ensureProfile(userId: string) {

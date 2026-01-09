@@ -8,14 +8,12 @@ interface CategoryBubbleProps {
   category: Category;
   selected: boolean;
   onPress: () => void;
-  labelPosition?: 'top' | 'bottom';
 }
 
 export const CategoryBubble: React.FC<CategoryBubbleProps> = ({
   category,
   selected,
   onPress,
-  labelPosition = 'bottom',
 }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -54,17 +52,8 @@ export const CategoryBubble: React.FC<CategoryBubbleProps> = ({
   return (
     <TouchableOpacity onPress={handlePress} activeOpacity={0.8}>
       <Animated.View
-        style={[
-          styles.container,
-          { transform: [{ scale: scaleAnim }] },
-          labelPosition === 'top' ? styles.containerReverse : undefined,
-        ]}
+        style={[styles.container, { transform: [{ scale: scaleAnim }] }]}
       >
-        {labelPosition === 'top' && (
-          <Text style={[styles.label, styles.labelTop, selected ? styles.selectedLabel : styles.unselectedLabel]}>
-            {category.name}
-          </Text>
-        )}
         <View
           style={[
             styles.bubble,
@@ -74,11 +63,9 @@ export const CategoryBubble: React.FC<CategoryBubbleProps> = ({
         >
           {getIconComponent()}
         </View>
-        {labelPosition === 'bottom' && (
-          <Text style={[styles.label, styles.labelBottom, selected ? styles.selectedLabel : styles.unselectedLabel]}>
-            {category.name}
-          </Text>
-        )}
+        <Text style={[styles.label, selected ? styles.selectedLabel : styles.unselectedLabel]}>
+          {category.name}
+        </Text>
       </Animated.View>
     </TouchableOpacity>
   );
@@ -89,15 +76,13 @@ const styles = {
     alignItems: 'center' as const,
     marginHorizontal: 8,
   },
-  containerReverse: {
-    flexDirection: 'column-reverse' as const,
-  },
   bubble: {
     width: 64,
     height: 64,
     borderRadius: 32,
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
+    marginBottom: 8,
   },
   selectedBubble: {
     borderWidth: 4,
@@ -115,12 +100,6 @@ const styles = {
   label: {
     fontSize: 12,
     fontWeight: '600' as const,
-  },
-  labelTop: {
-    marginBottom: 8,
-  },
-  labelBottom: {
-    marginTop: 8,
   },
   selectedLabel: {
     color: '#111827',

@@ -22,22 +22,11 @@ export const useProfile = () => {
     },
   });
 
-  const updateDividerPositionMutation = useMutation({
-    mutationFn: ({ position }: { position: number }) => {
-      if (!user) throw new Error('Not authenticated');
-      return profileService.updateDividerPosition(user.id, position);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['profile', user?.id] });
-    },
-  });
-
   return {
     profile: query.data,
     isLoading: query.isLoading,
     error: query.error,
     updateProfile: updateMutation.mutateAsync,
     isUpdating: updateMutation.isPending,
-    updateDividerPosition: updateDividerPositionMutation.mutateAsync,
   };
 };

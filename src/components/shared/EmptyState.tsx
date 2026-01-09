@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { Video as LucideIcon } from 'lucide-react-native';
 
 interface EmptyStateProps {
-  icon?: typeof LucideIcon;
+  icon?: LucideIcon;
   title: string;
   description?: string;
   message?: string;
