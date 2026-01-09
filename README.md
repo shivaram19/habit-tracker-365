@@ -33,161 +33,120 @@ A beautiful mobile app for tracking your life by the hour. Log what you're doing
 
 ## Tech Stack
 
-### Mobile App
 - **Framework**: Expo + React Native
 - **Navigation**: Expo Router (file-based routing)
 - **Styling**: NativeWind (Tailwind CSS for React Native)
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth (email/password)
 - **State Management**: React Context + TanStack Query
 - **Charts**: Victory Native
 - **Icons**: Lucide React Native
 - **Language**: TypeScript
 
-### Backend API
-- **Framework**: Node.js + Express
-- **Database**: PostgreSQL
-- **Authentication**: JWT
-- **Language**: TypeScript
-- **File Storage**: Local filesystem
-
 ## Prerequisites
 
 - Node.js 18+ installed
 - npm or yarn package manager
-- PostgreSQL database (free tier recommended)
 - Expo Go app (for testing on mobile device)
+- Supabase account (already configured)
 
 ## Setup Instructions
 
 ### 1. Clone and Install
 
 ```bash
-# Install all dependencies (root, mobile, and api)
-npm run install:all
+# Install dependencies
+npm install
 ```
 
-### 2. Database Setup
+### 2. Environment Variables
 
-Create a PostgreSQL database (use any free tier provider like Supabase, ElephantSQL, Railway, or Neon).
+The project comes with a `.env` file that includes your Supabase configuration. These are already set up:
 
-Get your connection string in this format:
-```
-postgresql://username:password@host:5432/database_name
-```
+- `VITE_SUPABASE_URL` - Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` - Your Supabase anonymous key
 
-### 3. Configure API Environment
+### 3. Database Setup
 
-Create `api/.env` file:
+The database is already configured with Supabase. The following tables are set up:
 
-```
-PORT=3000
-NODE_ENV=development
-DATABASE_URL=postgresql://username:password@host:5432/database
-JWT_SECRET=your-super-secret-jwt-key-min-32-characters
-JWT_EXPIRES_IN=7d
-UPLOAD_DIR=./uploads
-MAX_FILE_SIZE=5242880
-```
+- **profiles** - User profile information
+- **logs** - Hourly activity logs with categories and colors
+- **list_items** - Custom tracking items (categories)
 
-Run database migrations:
-
-```bash
-npm run api:migrate
-```
-
-### 4. Configure Mobile App Environment
-
-Create `mobile/.env` file:
-
-```
-EXPO_PUBLIC_API_URL=http://localhost:3000/api
-```
-
-For production, use your deployed API URL.
+All tables have Row Level Security (RLS) enabled for data protection.
 
 ## Running the App
 
-### Development Mode (Both Services)
+### Development Mode
 
-Start both the API server and mobile app:
+Start the Expo development server:
 
 ```bash
 npm run dev
 ```
 
-Or run them separately:
+This will start the Expo development server. You can then:
 
-```bash
-# Terminal 1 - API Server
-npm run api:dev
-
-# Terminal 2 - Mobile App
-npm run mobile:dev
-```
-
-The mobile app can be accessed by:
 - Press `w` to open in web browser
-- Scan the QR code with Expo Go app (iOS/Android)
+- Scan the QR code with Expo Go app (iOS/Android) to run on your phone
 - Press `i` to open iOS simulator (macOS only)
 - Press `a` to open Android emulator
 
-### API Only
+### Web Build
+
+To build for web deployment:
 
 ```bash
-npm run api:dev
+npm run build:web
 ```
 
-API will be available at `http://localhost:3000`
-
-### Mobile App Only
-
-```bash
-npm run mobile:dev
-```
+The output will be in the `dist` folder.
 
 ### Type Checking
 
-Run TypeScript type checking for both projects:
+Run TypeScript type checking:
 
 ```bash
 npm run typecheck
 ```
 
+### Linting
+
+Run the linter:
+
+```bash
+npm run lint
+```
+
 ## Project Structure
 
 ```
-/
-├── api/                     # Express API Server
-│   ├── src/
-│   │   ├── routes/         # API routes
-│   │   ├── services/       # Business logic
-│   │   ├── middleware/     # Auth, error handling
-│   │   ├── config/         # Database, JWT config
-│   │   ├── scripts/        # Migration scripts
-│   │   └── index.ts        # Entry point
-│   ├── package.json
-│   └── tsconfig.json
-├── mobile/                  # Expo Mobile App
-│   ├── app/                # Routes (Expo Router)
-│   │   ├── (tabs)/        # Main tab navigation
-│   │   │   ├── log.tsx    # Hourly logging
-│   │   │   ├── history.tsx # Heatmap view
-│   │   │   ├── wrapped.tsx # Analytics
-│   │   │   └── profile.tsx # User profile
-│   │   ├── auth/          # Auth screens
-│   │   ├── _layout.tsx
-│   │   └── index.tsx
-│   ├── src/
-│   │   ├── components/    # React components
-│   │   ├── context/       # Context providers
-│   │   ├── hooks/         # Custom hooks
-│   │   ├── services/      # API client
-│   │   ├── types/         # TypeScript types
-│   │   └── utils/         # Utilities
-│   ├── assets/            # Static files
-│   ├── package.json
-│   └── tsconfig.json
-├── package.json            # Root workspace config
-└── DEPLOYMENT.md          # Deployment guide
+├── app/                      # Routes (Expo Router)
+│   ├── (tabs)/              # Main tab navigation
+│   │   ├── log.tsx          # Hourly logging screen
+│   │   ├── history.tsx      # Heatmap & history view
+│   │   ├── wrapped.tsx      # Yearly analytics
+│   │   └── profile.tsx      # User profile
+│   ├── auth/                # Authentication screens
+│   │   ├── login.tsx
+│   │   └── signup.tsx
+│   ├── _layout.tsx          # Root layout
+│   └── index.tsx            # Entry point
+├── src/
+│   ├── components/          # React components
+│   │   ├── features/        # Feature-specific components
+│   │   ├── screens/         # Screen components
+│   │   └── shared/          # Reusable UI components
+│   ├── context/             # React Context providers
+│   │   ├── AuthContext.tsx  # Authentication state
+│   │   └── ToastContext.tsx # Toast notifications
+│   ├── hooks/               # Custom React hooks
+│   ├── services/            # API & Supabase services
+│   ├── types/               # TypeScript type definitions
+│   └── utils/               # Utility functions
+├── assets/                  # Images and static files
+└── supabase/               # Database migrations (if any)
 ```
 
 ## Key Features Explained
