@@ -27,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png"
+        "foregroundImage": "./assets/images/icon.png"
       },
       "package": "com.shivaram19.boltexponativewind"
     }
