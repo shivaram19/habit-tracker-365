@@ -24,15 +24,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const initAuth = async () => {
       try {
+        console.log('[AuthContext] Initializing auth...');
         const currentSession = await authService.getSession();
 
         if (currentSession) {
+          console.log('[AuthContext] Session found:', currentSession.user.email);
           setSession(currentSession);
           setUser(currentSession.user);
+        } else {
+          console.log('[AuthContext] No session found');
         }
-      } catch (err) {
-        console.error('Auth initialization error:', err);
+      } catch (err: any) {
+        // Handle network errors gracefully
+        if (err?.message?.includes('Network request failed')) {
+          console.warn('[AuthContext] Network unavailable - continuing in offline mode');
+          setError(null); // Don't show error for network issues
+        } else {
+          console.error('[AuthContext] Auth initialization error:', err);
+          setError('Failed to initialize authentication');
+        }
       } finally {
+        console.log('[AuthContext] Auth initialization complete');
         setLoading(false);
       }
     };
@@ -41,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, currentSession) => {
+        console.log('[AuthContext] Auth state changed:', event);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setLoading(false);
