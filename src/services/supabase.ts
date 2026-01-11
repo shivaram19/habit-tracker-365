@@ -6,7 +6,14 @@ import { Platform } from 'react-native';
 const supabaseUrl = Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = Constants.expoConfig?.extra?.EXPO_PUBLIC_SUPABASE_ANON_KEY || process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
 
+console.log('[Supabase] Initializing with:', {
+  url: supabaseUrl ? 'present' : 'missing',
+  key: supabaseAnonKey ? 'present' : 'missing',
+  platform: Platform.OS,
+});
+
 if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('[Supabase] Missing environment variables:', { supabaseUrl, supabaseAnonKey });
   throw new Error('Missing Supabase environment variables');
 }
 
