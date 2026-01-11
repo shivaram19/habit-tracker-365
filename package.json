@@ -4,12 +4,14 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "EXPO_NO_TELEMETRY=1 expo start",
+    "dev": "cross-env EXPO_NO_TELEMETRY=1 expo start",
+    "dev:android": "dev-android.bat",
     "build:web": "expo export --platform web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "android": "expo run:android",
-    "ios": "expo run:ios"
+    "android": "cross-env ANDROID_HOME=C:\\Users\\smorigala\\AppData\\Local\\Android\\Sdk ANDROID_SDK_ROOT=C:\\Users\\smorigala\\AppData\\Local\\Android\\Sdk expo run:android",
+    "ios": "expo run:ios",
+    "emulator": "powershell -ExecutionPolicy Bypass -File ./start-emulator.ps1"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -62,6 +64,7 @@
     "@types/react": "~19.1.10",
     "@types/react-native": "^0.72.8",
     "babel-plugin-module-resolver": "^5.0.2",
+    "cross-env": "^10.1.0",
     "typescript": "~5.9.2"
   }
 }
