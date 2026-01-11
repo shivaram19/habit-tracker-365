@@ -28,9 +28,9 @@ export const SignupScreen = () => {
   const { showToast } = useToast();
   const { theme } = useTheme();
 
-  // Animation values
-  const fadeAnim = new Animated.Value(0);
-  const slideAnim = new Animated.Value(30);
+  // Animation values - use useRef to prevent recreation on re-render
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const slideAnim = React.useRef(new Animated.Value(30)).current;
 
   useEffect(() => {
     Animated.parallel([
