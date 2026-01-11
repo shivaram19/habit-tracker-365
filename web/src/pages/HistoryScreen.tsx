@@ -8,7 +8,7 @@ export default function HistoryScreen() {
   // Get data from localStorage
   const getDaysData = () => {
     try {
-      const stored = window.localStorage.getItem('chromalife-days');
+      const stored = window.localStorage.getItem('iconscious-days');
       if (!stored) return [];
       
       const data = JSON.parse(stored);

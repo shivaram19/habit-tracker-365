@@ -11,6 +11,9 @@ interface LayoutProps {
 
 type Tab = 'log' | 'history' | 'wrapped' | 'profile';
 
+const APP_NAME = 'Iconscious';
+const APP_TAGLINE = 'Track. Visualize. Achieve.';
+
 const tabs = [
   { id: 'log' as Tab, label: 'Log', icon: Calendar },
   { id: 'history' as Tab, label: 'History', icon: History },
@@ -42,13 +45,13 @@ export default function Layout({ children, activeTab, onTabChange }: LayoutProps
             className="text-3xl xl:text-4xl font-heading"
             style={{ color: 'var(--burnt-orange, #cc5500)', transform: 'rotate(-1.5deg)' }}
           >
-            ChromaLife
+            {APP_NAME}
           </h1>
           <p 
             className="font-mono text-xs xl:text-sm mt-2"
             style={{ color: 'var(--ink-color, #2c2c2c)', opacity: 0.7 }}
           >
-            Your digital scrapbook
+            {APP_TAGLINE}
           </p>
         </motion.div>
 
@@ -107,7 +110,7 @@ export default function Layout({ children, activeTab, onTabChange }: LayoutProps
           animate={{ rotate: [-1, 1, -1] }}
           transition={{ repeat: Infinity, duration: 3 }}
         >
-          ChromaLife
+          {APP_NAME}
         </motion.h1>
 
         <div className="flex items-center gap-2">

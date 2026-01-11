@@ -1,5 +1,6 @@
 {
-  "name": "web",
+  "name": "iconscious",
+  "description": "A beautiful habit tracker web application",
   "private": true,
   "version": "0.0.0",
   "type": "module",

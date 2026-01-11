@@ -1,6 +1,6 @@
-# ChromaLife Web Frontend 🎨
+# Iconscious - Web Frontend 🎨
 
-A beautiful, nostalgic habit tracker with an "Anti-AI" aesthetic inspired by Windows 98 and digital scrapbooks.
+A beautiful habit tracker application for logging and visualizing your daily activities across 24 hours.
 
 ![ChromaLife Preview](https://via.placeholder.com/800x400/fdfbf7/cc5500?text=ChromaLife+-+Your+Digital+Scrapbook)
 

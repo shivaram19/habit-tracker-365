@@ -20,7 +20,7 @@ export function ListItemsManager({ date }: ListItemsManagerProps) {
   const [showFilters, setShowFilters] = useState(false);
 
   // Store items in localStorage keyed by date
-  const storageKey = `chromalife_items_${date}`;
+  const storageKey = `iconscious_items_${date}`;
   const [items, setItems] = useLocalStorage<ListItem[]>(storageKey, []);
 
   const handleAddItem = async (itemData: Omit<ListItem, 'id'>) => {

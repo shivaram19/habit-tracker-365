@@ -40,7 +40,7 @@ export default function SignupPage() {
     setIsLoading(true);
     try {
       await signUp(email, password, name);
-      showToast('Account created! Welcome to ChromaLife 🎨', 'success');
+      showToast('Account created! Welcome to Iconscious 🎨', 'success');
       navigate('/');
     } catch (err: any) {
       showToast(err.message || 'Signup failed', 'error');
@@ -77,10 +77,10 @@ export default function SignupPage() {
               transition={{ repeat: Infinity, duration: 3 }}
               style={{ color: 'var(--burnt-orange, #cc5500)' }}
             >
-              ChromaLife
+              Iconscious
             </motion.h1>
             <p className="font-mono text-sm" style={{ color: 'var(--ink-color)', opacity: 0.7 }}>
-              Start your colorful journey 🎨
+              Track. Visualize. Achieve. 🎨
             </p>
           </div>
 

@@ -39,7 +39,7 @@ const darkColors: ThemeColors = {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const THEME_KEY = 'chromalife_theme';
+const THEME_KEY = 'iconscious_theme';
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [colorScheme, setColorScheme] = useState<ColorScheme>(() => {

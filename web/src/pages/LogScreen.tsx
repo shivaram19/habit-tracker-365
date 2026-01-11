@@ -20,7 +20,7 @@ interface DayData {
 export default function LogScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedCategory, setSelectedCategory] = useState(1); // Default to Work
-  const [dailyData, setDailyData] = useLocalStorage<{ [key: string]: DayData }>('chromalife-days', {});
+  const [dailyData, setDailyData] = useLocalStorage<{ [key: string]: DayData }>('iconscious-days', {});
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saved' | 'error'>('idle');
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);

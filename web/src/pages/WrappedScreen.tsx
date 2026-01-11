@@ -26,7 +26,7 @@ interface CategoryStat {
 
 export default function WrappedScreen() {
   const [year, setYear] = useState(new Date().getFullYear());
-  const [dailyData] = useLocalStorage<{ [key: string]: DayData }>('chromalife-days', {});
+  const [dailyData] = useLocalStorage<{ [key: string]: DayData }>('iconscious-days', {});
 
   // Calculate stats from stored data
   const stats = useMemo(() => {

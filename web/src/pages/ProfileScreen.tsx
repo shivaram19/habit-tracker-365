@@ -16,8 +16,8 @@ export default function ProfileScreen() {
 
   const handleExportData = () => {
     try {
-      const data = window.localStorage.getItem('chromalife-days');
-      const items = window.localStorage.getItem('chromalife_items_') || '{}';
+      const data = window.localStorage.getItem('iconscious-days');
+      const items = window.localStorage.getItem('iconscious_items_') || '{}';
       const exportData = {
         days: JSON.parse(data || '{}'),
         items: JSON.parse(items),
@@ -28,7 +28,7 @@ export default function ProfileScreen() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `chromalife-export-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `iconscious-export-${new Date().toISOString().split('T')[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
       showToast('Data exported successfully! 📦', 'success');
@@ -47,7 +47,7 @@ export default function ProfileScreen() {
       try {
         const importedData = JSON.parse(event.target?.result as string);
         if (importedData.days) {
-          window.localStorage.setItem('chromalife-days', JSON.stringify(importedData.days));
+          window.localStorage.setItem('iconscious-days', JSON.stringify(importedData.days));
         }
         showToast('Data imported successfully! 🎉', 'success');
         window.location.reload();
@@ -60,9 +60,9 @@ export default function ProfileScreen() {
 
   const handleClearData = () => {
     if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-      // Clear all chromalife data from localStorage
+      // Clear all iconscious data from localStorage
       Object.keys(localStorage).forEach(key => {
-        if (key.startsWith('chromalife')) {
+        if (key.startsWith('iconscious')) {
           localStorage.removeItem(key);
         }
       });
@@ -128,7 +128,7 @@ export default function ProfileScreen() {
               style={{ color: 'var(--ink-color, #2c2c2c)', opacity: 0.7 }}
             >
               <Mail size={16} />
-              {user?.email || 'demo@chromalife.app'}
+              {user?.email || 'demo@iconscious.app'}
             </div>
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function ProfileScreen() {
             className="font-mono text-xs sm:text-sm"
             style={{ color: 'var(--ink-color, #2c2c2c)', opacity: 0.8 }}
           >
-            ChromaLife Web v1.0.0
+            Iconscious Web v1.0.0
             <br />
             Built with ❤️ and a little chaos ✨
           </p>

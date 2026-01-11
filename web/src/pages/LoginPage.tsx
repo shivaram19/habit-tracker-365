@@ -54,10 +54,10 @@ export default function LoginPage() {
               transition={{ repeat: Infinity, duration: 3 }}
               style={{ color: 'var(--burnt-orange, #cc5500)' }}
             >
-              ChromaLife
+              Iconscious
             </motion.h1>
             <p className="font-mono text-sm" style={{ color: 'var(--ink-color, #2c2c2c)', opacity: 0.7 }}>
-              Welcome back, creative soul ✨
+              Track. Visualize. Achieve. ✨
             </p>
           </div>
 
