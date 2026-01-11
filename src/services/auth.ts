@@ -1,7 +1,49 @@
 import { supabase } from './supabase';
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 const TOKEN_KEY = 'chromalife_auth_token';
+
+// Cross-platform storage helper functions
+async function saveToken(token: string) {
+  try {
+    if (Platform.OS === 'web') {
+      await AsyncStorage.setItem(TOKEN_KEY, token);
+    } else {
+      await SecureStore.setItemAsync(TOKEN_KEY, token);
+    }
+  } catch (error) {
+    console.error('Error saving token:', error);
+    throw error;
+  }
+}
+
+async function getToken() {
+  try {
+    if (Platform.OS === 'web') {
+      return await AsyncStorage.getItem(TOKEN_KEY);
+    } else {
+      return await SecureStore.getItemAsync(TOKEN_KEY);
+    }
+  } catch (error) {
+    console.error('Error retrieving token:', error);
+    return null;
+  }
+}
+
+async function deleteToken() {
+  try {
+    if (Platform.OS === 'web') {
+      await AsyncStorage.removeItem(TOKEN_KEY);
+    } else {
+      await SecureStore.deleteItemAsync(TOKEN_KEY);
+    }
+  } catch (error) {
+    console.error('Error deleting token:', error);
+    throw error;
+  }
+}
 
 export const authService = {
   async signup(email: string, password: string, name?: string) {
@@ -18,7 +60,7 @@ export const authService = {
     if (error) throw error;
 
     if (data.user && data.session) {
-      await SecureStore.setItemAsync(TOKEN_KEY, data.session.access_token);
+      await saveToken(data.session.access_token);
 
       const { error: profileError } = await supabase.from('profiles').insert({
         id: data.user.id,
@@ -44,7 +86,7 @@ export const authService = {
     if (error) throw error;
 
     if (data.session) {
-      await SecureStore.setItemAsync(TOKEN_KEY, data.session.access_token);
+      await saveToken(data.session.access_token);
     }
 
     return { user: data.user, session: data.session };
@@ -54,7 +96,7 @@ export const authService = {
     const { error } = await supabase.auth.signOut();
 
     try {
-      await SecureStore.deleteItemAsync(TOKEN_KEY);
+      await deleteToken();
     } catch (err) {
       console.error('Failed to delete stored token:', err);
     }
@@ -78,13 +120,13 @@ export const authService = {
     if (error) throw error;
 
     if (session) {
-      await SecureStore.setItemAsync(TOKEN_KEY, session.access_token);
+      await saveToken(session.access_token);
     }
 
     return session;
   },
 
   async getStoredToken() {
-    return await SecureStore.getItemAsync(TOKEN_KEY);
+    return await getToken();
   },
 };
