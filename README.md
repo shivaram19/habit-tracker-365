@@ -1,6 +1,6 @@
-# Conscious
+# iconscious
 
-> **conscious.app** — Track your life with intention
+> **iconscious.app** — Track your life with intention
 
 A beautiful mobile app for conscious living. Log what you're doing each hour with categories and colors, visualize your time with stunning heatmaps, and get your yearly "Wrapped" stats.
 
@@ -233,7 +233,7 @@ The app uses Supabase authentication with email/password:
 
 ## ⚠️ License & Copyright
 
-**© 2026 shivaram19 / Conscious (conscious.app). All Rights Reserved.**
+**© 2026 shivaram19 / iconscious (iconscious.app). All Rights Reserved.**
 
 This software is proprietary and confidential. Unauthorized copying, distribution, modification, public display, or public performance of this software is strictly prohibited.
 
@@ -244,6 +244,6 @@ This software is proprietary and confidential. Unauthorized copying, distributio
 - Distribute or share this code
 - Use the concepts, designs, or ideas from this project
 
-For licensing inquiries, contact via [conscious.app](https://conscious.app).
+For licensing inquiries, contact via [iconscious.app](https://iconscious.app).
 
 See the [LICENSE](./LICENSE) file for complete terms.
