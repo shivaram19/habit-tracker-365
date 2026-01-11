@@ -48,6 +48,7 @@ export const LineChart: React.FC<LineChartProps> = ({ data }) => {
                   left: prevPoint.x,
                   top: prevPoint.y,
                   width: Math.sqrt(Math.pow(point.x - prevPoint.x, 2) + Math.pow(point.y - prevPoint.y, 2)),
+                  transformOrigin: 'left center',
                   transform: [
                     { rotate: `${Math.atan2(point.y - prevPoint.y, point.x - prevPoint.x)}rad` },
                   ],
