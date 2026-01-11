@@ -1,0 +1,309 @@
+/* Tailwind CSS v4 - CSS-based configuration */
+@import "tailwindcss";
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Gochi+Hand&family=Space+Mono:wght@400;700&family=Courier+Prime:wght@400;700&display=swap');
+
+/* Custom Theme Configuration for Tailwind v4 */
+@theme {
+  /* Wabi-Sabi Palette */
+  --color-paper: #fdfbf7;
+  --color-cream: #fdfbf7;
+  --color-ink: #2c2c2c;
+  
+  /* Nostalgic Crayola Colors */
+  --color-burnt-orange: #cc5500;
+  --color-dandelion: #ffd700;
+  --color-cerulean: #007ba7;
+  --color-brick-red: #cb4154;
+  --color-forest-green: #228b22;
+  --color-violet: #8b5cf6;
+  --color-sky-blue: #87ceeb;
+  --color-sunset-orange: #ff7f50;
+  
+  /* Category Colors */
+  --color-category-0: #e5e5e5;
+  --color-category-1: #4ade80;
+  --color-category-2: #3b82f6;
+  --color-category-3: #fb923c;
+  --color-category-4: #ef4444;
+  --color-category-5: #a855f7;
+  --color-category-6: #ec4899;
+  --color-category-7: #facc15;
+  --color-category-8: #14b8a6;
+  --color-category-9: #6366f1;
+  --color-category-10: #94a3b8;
+  --color-category-11: #06b6d4;
+  --color-category-12: #71717a;
+  
+  /* Font Families */
+  --font-heading: 'Patrick Hand', 'Gochi Hand', cursive;
+  --font-mono: 'Space Mono', 'Courier Prime', monospace;
+  --font-body: 'Space Mono', 'Courier Prime', monospace;
+  
+  /* Organic Border Radius */
+  --radius-organic-sm: 12px 8px 10px 9px / 9px 10px 8px 12px;
+  --radius-organic: 15px 10px 13px 11px / 11px 13px 10px 15px;
+  --radius-organic-lg: 20px 15px 18px 16px / 16px 18px 15px 20px;
+  --radius-organic-xl: 25px 18px 22px 19px / 19px 22px 18px 25px;
+  --radius-organic-2xl: 30px 20px 28px 22px / 22px 28px 20px 30px;
+  --radius-organic-3xl: 40px 28px 35px 30px / 30px 35px 28px 40px;
+  --radius-wabi: 255px 15px 225px 15px / 15px 225px 15px 255px;
+  
+  /* Animations */
+  --animate-jiggle: jiggle 0.3s ease-in-out;
+  --animate-press: press 0.1s ease-in-out;
+  --animate-wiggle: wiggle 1s ease-in-out infinite;
+  
+  /* Border width */
+  --border-width-3: 3px;
+}
+
+/* Keyframe Animations */
+@keyframes jiggle {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes press {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(3px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+/* Base Styles */
+:root {
+  --paper-bg: #fdfbf7;
+  --ink-color: #2c2c2c;
+}
+
+body {
+  margin: 0;
+  font-family: 'Space Mono', 'Courier Prime', monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--paper-bg);
+  color: var(--ink-color);
+  
+  /* Paper grain texture using SVG filter */
+  background-image: 
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' /%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  
+  /* Custom pixelated pencil cursor - light mode (dark pencil) */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%232c2c2c' d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z'/%3E%3C/svg%3E") 0 24, auto;
+}
+
+/* Dark mode cursor - light pencil with better visibility */
+.dark body,
+html.dark body {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23fdfbf7' stroke='%23333' stroke-width='0.5' d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z'/%3E%3C/svg%3E") 0 24, auto;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Patrick Hand', 'Gochi Hand', cursive;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/* Button Styles */
+.btn {
+  font-family: 'Space Mono', monospace;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border: 3px solid #2c2c2c;
+  border-radius: 15px 10px 13px 11px / 11px 13px 10px 15px;
+  transition: transform 75ms;
+  cursor: pointer;
+  user-select: none;
+  background-color: #fdfbf7;
+}
+
+.btn:active {
+  transform: translateY(2px);
+}
+
+.btn:hover {
+  animation: jiggle 0.3s ease-in-out;
+}
+
+.btn-primary {
+  background-color: #cc5500;
+  color: #fdfbf7;
+}
+
+.btn-primary:hover {
+  background-color: #b34a00;
+}
+
+.btn-secondary {
+  background-color: #007ba7;
+  color: #fdfbf7;
+}
+
+.btn-danger {
+  background-color: #cb4154;
+  color: #fdfbf7;
+}
+
+/* Card Styles */
+.card {
+  background-color: #fdfbf7;
+  border: 3px solid #2c2c2c;
+  border-radius: 20px 15px 18px 16px / 16px 18px 15px 20px;
+  padding: 1.5rem;
+}
+
+/* Input Styles */
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  padding-left: 3rem; /* Extra padding for icon */
+  border: 3px solid #2c2c2c;
+  border-radius: 15px 10px 13px 11px / 11px 13px 10px 15px;
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  background-color: #fdfbf7;
+  color: #2c2c2c;
+  transition: border-color 200ms;
+}
+
+.input::placeholder {
+  color: rgba(44, 44, 44, 0.4);
+}
+
+.input:focus {
+  outline: none;
+  border-color: #cc5500;
+}
+
+.input-no-icon {
+  padding-left: 1rem;
+}
+
+/* Hour Block Styles */
+.hour-block {
+  border: 2px solid #2c2c2c;
+  border-radius: 12px 8px 10px 9px / 9px 10px 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.875rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 75ms;
+  user-select: none;
+}
+
+.hour-block:hover {
+  transform: scale(1.05);
+}
+
+.hour-block:active {
+  transform: scale(0.95);
+}
+
+/* Navigation Tab Styles */
+.nav-tab {
+  padding: 0.75rem 1.5rem;
+  border: 3px solid #2c2c2c;
+  border-top-left-radius: 15px 10px;
+  border-top-right-radius: 13px 11px;
+  font-family: 'Space Mono', monospace;
+  font-weight: bold;
+  color: #2c2c2c;
+  cursor: pointer;
+  user-select: none;
+  transition: all 150ms;
+  background-color: #fdfbf7;
+}
+
+.nav-tab:hover {
+  background-color: #ffd700;
+}
+
+.nav-tab.active {
+  background-color: #cc5500;
+  color: #fdfbf7;
+}
+
+/* Heatmap Styles */
+.heatmap-day {
+  border: 1px solid #2c2c2c;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: transform 150ms;
+}
+
+.heatmap-day:hover {
+  transform: scale(1.2);
+  border-width: 2px;
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(44, 44, 44, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #fdfbf7;
+  border: 2px solid #2c2c2c;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #cc5500;
+  border: 2px solid #2c2c2c;
+  border-radius: 12px 8px 10px 9px / 9px 10px 8px 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #cb4154;
+}
+
+/* Utility Classes */
+.rotate-wabi {
+  transform: rotate(-1.5deg);
+}
+
+.rotate-wabi-alt {
+  transform: rotate(1.5deg);
+}
+
+.cursor-pencil {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%232c2c2c' d='M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z'/%3E%3C/svg%3E") 0 24, auto;
+}
+
+.shadow-hard {
+  box-shadow: 3px 3px 0px 0px rgba(44, 44, 44, 1);
+}
+
+.shadow-hard-sm {
+  box-shadow: 2px 2px 0px 0px rgba(44, 44, 44, 1);
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    background-image: none;
+  }
+}
