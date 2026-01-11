@@ -1,8 +1,10 @@
 {
-  "name": "bolt-expo-starter",
+  "name": "conscious",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "shivaram19",
   "scripts": {
     "dev": "cross-env EXPO_NO_TELEMETRY=1 expo start",
     "dev:android": "dev-android.bat",

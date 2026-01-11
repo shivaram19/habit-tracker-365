@@ -1,6 +1,8 @@
-# Day Tracker
+# Conscious
 
-A beautiful mobile app for tracking your life by the hour. Log what you're doing each hour with categories and colors, visualize your time with stunning heatmaps, and get your yearly "Wrapped" stats.
+> **conscious.app** — Track your life with intention
+
+A beautiful mobile app for conscious living. Log what you're doing each hour with categories and colors, visualize your time with stunning heatmaps, and get your yearly "Wrapped" stats.
 
 ## Features
 
@@ -229,10 +231,19 @@ The app uses Supabase authentication with email/password:
 - Check React Native docs for platform-specific behavior
 - Use the TypeScript compiler to catch errors early
 
-## Contributing
+## ⚠️ License & Copyright
 
-This is a personal tracking app, but feel free to fork and customize for your own use!
+**© 2026 shivaram19 / Conscious (conscious.app). All Rights Reserved.**
 
-## License
+This software is proprietary and confidential. Unauthorized copying, distribution, modification, public display, or public performance of this software is strictly prohibited.
 
-Private project - all rights reserved.
+**You may NOT:**
+- Use this code for any purpose
+- Copy or reproduce any part of this codebase
+- Modify or create derivative works
+- Distribute or share this code
+- Use the concepts, designs, or ideas from this project
+
+For licensing inquiries, contact via [conscious.app](https://conscious.app).
+
+See the [LICENSE](./LICENSE) file for complete terms.

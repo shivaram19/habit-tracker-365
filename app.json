@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-nativewind",
-    "slug": "expo-nativewind",
+    "name": "Conscious",
+    "slug": "conscious",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -10,12 +10,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "scheme": "myapp",
+    "scheme": "conscious",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.shivaram19.boltexponativewind"
+      "bundleIdentifier": "app.conscious.mobile"
     },
     "web": {
       "bundler": "metro",
@@ -34,7 +34,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png"
       },
-      "package": "com.shivaram19.boltexponativewind"
+      "package": "app.conscious.mobile"
     }
   }
 }
