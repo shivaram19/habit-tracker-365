@@ -29,15 +29,29 @@ export const Input: React.FC<InputProps> = ({
   const { theme } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
 
+  // Fallback values for safety
+  const spacing = theme?.spacing || { 1: 4, 2: 8, 3: 12, 4: 16, 6: 24 };
+  const colors = theme?.colors || {
+    text: { primary: '#111827', secondary: '#6B7280', tertiary: '#9CA3AF' },
+    background: { secondary: '#F3F4F6' },
+    border: { primary: '#E5E7EB' },
+    error: { 500: '#EF4444' },
+  };
+  const typography = theme?.typography || {
+    fontSizes: { sm: 14, base: 16 },
+    fontWeights: { medium: '500' as const },
+  };
+  const borderRadius = theme?.borderRadius || { lg: 8 };
+
   return (
-    <View style={{ marginBottom: theme.spacing[4] }}>
+    <View style={{ marginBottom: spacing[4] }}>
       {label && (
         <Text
           style={{
-            color: theme.colors.text.secondary,
-            fontWeight: theme.typography.fontWeights.medium,
-            marginBottom: theme.spacing[2],
-            fontSize: theme.typography.fontSizes.sm,
+            color: colors.text.secondary,
+            fontWeight: typography.fontWeights.medium,
+            marginBottom: spacing[2],
+            fontSize: typography.fontSizes.sm,
           }}
         >
           {label}
@@ -54,20 +68,20 @@ export const Input: React.FC<InputProps> = ({
           editable={editable}
           style={[
             {
-              backgroundColor: theme.colors.background.secondary,
+              backgroundColor: colors.background.secondary,
               borderWidth: 1,
-              borderRadius: theme.borderRadius.lg,
-              paddingHorizontal: theme.spacing[4],
-              paddingVertical: theme.spacing[3],
-              fontSize: theme.typography.fontSizes.base,
-              color: theme.colors.text.primary,
+              borderRadius: borderRadius.lg,
+              paddingHorizontal: spacing[4],
+              paddingVertical: spacing[3],
+              fontSize: typography.fontSizes.base,
+              color: colors.text.primary,
             },
             error
-              ? { borderColor: theme.colors.error[500] }
-              : { borderColor: theme.colors.border.primary },
+              ? { borderColor: colors.error[500] }
+              : { borderColor: colors.border.primary },
             !editable && styles.inputDisabled,
           ]}
-          placeholderTextColor={theme.colors.text.tertiary}
+          placeholderTextColor={colors.text.tertiary}
         />
         {secureTextEntry && (
           <TouchableOpacity
@@ -75,9 +89,9 @@ export const Input: React.FC<InputProps> = ({
             style={styles.eyeIcon}
           >
             {showPassword ? (
-              <EyeOff size={20} color={theme.colors.text.tertiary} />
+              <EyeOff size={20} color={colors.text.tertiary} />
             ) : (
-              <Eye size={20} color={theme.colors.text.tertiary} />
+              <Eye size={20} color={colors.text.tertiary} />
             )}
           </TouchableOpacity>
         )}
@@ -85,9 +99,9 @@ export const Input: React.FC<InputProps> = ({
       {error && (
         <Text
           style={{
-            color: theme.colors.error[500],
-            fontSize: theme.typography.fontSizes.sm,
-            marginTop: theme.spacing[1],
+            color: colors.error[500],
+            fontSize: typography.fontSizes.sm,
+            marginTop: spacing[1],
           }}
         >
           {error}

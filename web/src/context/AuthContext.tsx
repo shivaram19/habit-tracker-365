@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { authService } from '../services/auth';
+import { supabase, isSupabaseConfigured } from '../services/supabase';
 import type { AuthUser, AuthSession } from '../services/auth';
 
 interface AuthContextType {
@@ -37,6 +38,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     initAuth();
+
+    // Subscribe to Supabase auth state changes
+    if (isSupabaseConfigured && supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          console.log('[AuthContext] Auth state changed:', event);
+          if (session) {
+            const authUser: AuthUser = {
+              id: session.user.id,
+              email: session.user.email!,
+              name: session.user.user_metadata?.name || '',
+            };
+            setUser(authUser);
+            setSession({
+              access_token: session.access_token,
+              user: authUser,
+            });
+          } else {
+            setUser(null);
+            setSession(null);
+          }
+          setLoading(false);
+        }
+      );
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    }
   }, []);
 
   const signUp = useCallback(async (email: string, password: string, name?: string) => {

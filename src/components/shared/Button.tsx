@@ -22,6 +22,20 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const { theme } = useTheme();
 
+  // Fallback values for safety
+  const spacing = theme?.spacing || { 4: 16, 6: 24 };
+  const colors = theme?.colors || {
+    primary: { 600: '#2563EB' },
+    neutral: { 200: '#E5E7EB' },
+    error: { 600: '#DC2626' },
+    text: { primary: '#111827', inverse: '#FFFFFF' },
+  };
+  const typography = theme?.typography || {
+    fontSizes: { base: 16 },
+    fontWeights: { semibold: '600' as const },
+  };
+  const borderRadius = theme?.borderRadius || { lg: 8 };
+
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     onPress();
@@ -31,19 +45,19 @@ export const Button: React.FC<ButtonProps> = ({
     switch (variant) {
       case 'primary':
         return {
-          backgroundColor: theme.colors.primary[600],
+          backgroundColor: colors.primary[600],
         };
       case 'secondary':
         return {
-          backgroundColor: theme.colors.neutral[200],
+          backgroundColor: colors.neutral[200],
         };
       case 'danger':
         return {
-          backgroundColor: theme.colors.error[600],
+          backgroundColor: colors.error[600],
         };
       default:
         return {
-          backgroundColor: theme.colors.primary[600],
+          backgroundColor: colors.primary[600],
         };
     }
   };
@@ -52,11 +66,11 @@ export const Button: React.FC<ButtonProps> = ({
     switch (variant) {
       case 'primary':
       case 'danger':
-        return theme.colors.text.inverse;
+        return colors.text.inverse;
       case 'secondary':
-        return theme.colors.text.primary;
+        return colors.text.primary;
       default:
-        return theme.colors.text.inverse;
+        return colors.text.inverse;
     }
   };
 
@@ -68,9 +82,9 @@ export const Button: React.FC<ButtonProps> = ({
       disabled={isDisabled}
       style={[
         {
-          paddingVertical: theme.spacing[4],
-          paddingHorizontal: theme.spacing[6],
-          borderRadius: theme.borderRadius.lg,
+          paddingVertical: spacing[4],
+          paddingHorizontal: spacing[6],
+          borderRadius: borderRadius.lg,
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
@@ -87,8 +101,8 @@ export const Button: React.FC<ButtonProps> = ({
         <Text
           style={[
             {
-              fontSize: theme.typography.fontSizes.base,
-              fontWeight: theme.typography.fontWeights.semibold,
+              fontSize: typography.fontSizes.base,
+              fontWeight: typography.fontWeights.semibold,
               color: getTextColor(),
             },
           ]}

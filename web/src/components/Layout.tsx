@@ -160,7 +160,8 @@ export default function Layout({ children, activeTab, onTabChange }: LayoutProps
                 >
                   Menu
                 </h2>
-                <button 
+                <button
+                  title='h' 
                   onClick={() => setMobileMenuOpen(false)}
                   style={{ color: 'var(--ink-color, #2c2c2c)' }}
                 >

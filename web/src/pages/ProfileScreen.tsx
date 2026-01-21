@@ -1,23 +1,25 @@
 import { motion } from 'framer-motion';
 import { User, Mail, Download, Trash2, LogOut, Upload } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { ThemeToggle } from '../components/shared/ThemeToggle';
 import { Button } from '../components/shared/Button';
 import { Card } from '../components/shared/Card';
+import { CurrencySelector } from '../components/shared/CurrencySelector';
 
 export default function ProfileScreen() {
   const { theme } = useTheme();
   const { user, signOut } = useAuth();
   const { showToast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
 
   const handleExportData = () => {
     try {
-      const data = window.localStorage.getItem('iconscious-days');
-      const items = window.localStorage.getItem('iconscious_items_') || '{}';
+      const data = window.localStorage.getItem('chromalife-days');
+      const items = window.localStorage.getItem('chromalife_items_') || '{}';
       const exportData = {
         days: JSON.parse(data || '{}'),
         items: JSON.parse(items),
@@ -60,7 +62,7 @@ export default function ProfileScreen() {
 
   const handleClearData = () => {
     if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-      // Clear all iconscious data from localStorage
+      // Clear all chromalife data from localStorage
       Object.keys(localStorage).forEach(key => {
         if (key.startsWith('iconscious')) {
           localStorage.removeItem(key);
@@ -135,7 +137,7 @@ export default function ProfileScreen() {
       </Card>
 
       {/* Settings */}
-      <Card padding="md">
+      <Card padding="md" style={{ position: 'relative', zIndex: currencyDropdownOpen ? 100 : 1 }}>
         <h3 
           className="font-heading text-xl sm:text-2xl mb-4"
           style={{ color: 'var(--ink-color, #2c2c2c)' }}
@@ -166,6 +168,11 @@ export default function ProfileScreen() {
           </div>
           <ThemeToggle />
         </div>
+
+        {/* Currency Selector */}
+        <div className="mt-4">
+          <CurrencySelector onOpenChange={setCurrencyDropdownOpen} />
+        </div>
       </Card>
 
       {/* Data Management */}
@@ -188,6 +195,7 @@ export default function ProfileScreen() {
           </Button>
 
           <input
+            placeholder='jangkunlee for today'
             ref={fileInputRef}
             type="file"
             accept=".json"
