@@ -247,3 +247,9 @@ This software is proprietary and confidential. Unauthorized copying, distributio
 For licensing inquiries, contact via [iconscious.app](https://iconscious.app).
 
 See the [LICENSE](./LICENSE) file for complete terms.
+
+
+Users will be able to create their own custom habits/tasks and not just choose from platform-defined ones.
+Users can choose a unique color for each custom habit/task, and the app will enforce that the same color cannot be assigned to multiple habits by the same user.
+At the end of each day, the app will calculate and display a composite color summary, mixing each habit’s color by the percentage of time spent. Users will have the option to include or exclude specific categories (like sleep) from this calculation.
+Users can add expense entries directly within each habit/category and split expenses with other users (e.g., splitting a movie ticket or grocery cost within the app).
